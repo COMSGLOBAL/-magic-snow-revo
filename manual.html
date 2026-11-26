@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>MAGIC SNOW · Manual REVO imprimible</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./print.css?v=1">
+
+</head>
+
+<body>
+
+  <div class="toolbar">
+
+    <div>
+      <strong>MAGIC SNOW</strong>
+      <small>Versión imprimible · Manual REVO</small>
+    </div>
+
+    <div class="toolbar-actions">
+
+      <a href="./index.html" class="button secondary">
+        ← Volver al manual
+      </a>
+
+      <button id="printButton" class="button">
+        🖨 Imprimir / Guardar PDF
+      </button>
+
+    </div>
+
+  </div>
+
+  <main id="manual"></main>
+
+  <script src="./content.js?v=6"></script>
+
+  <script>
+
+    const modules = APP_CONTENT.modules;
+
+    const e = value => String(value ?? "")
+      .replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+
+    const number = n => String(n).padStart(2, "0");
+
+    // CABECERA DE CADA MÓDULO
+
+    function header(m) {
+
+      return `
+
+        <header class="page-header">
+
+          <div>
+            <strong>MAGIC SNOW</strong>
+            <small>MANUAL REVO · NAVIDAD 2026</small>
+          </div>
+
+          <span class="module-number">
+            ${number(m.id)}
+          </span>
+
+        </header>
+
+      `;
+
+    }
+
+    // PIE DE PÁGINA
+
+    function footer() {
+
+      return `
+
+        <footer class="page-footer">
+
+          <span>LA CASA DE LAS CARCASAS</span>
+
+          <span>DOCUMENTO DE USO INTERNO</span>
+
+          <span>MAGIC SNOW 2026</span>
+
+        </footer>
+
+      `;
+
+    }
+
+    // PORTADA E ÍNDICE
+
+    function cover() {
+
+      return `
+
+        <section class="page cover">
+
+          <div class="cover-brand">
+            LA CASA DE LAS CARCASAS
+          </div>
+
+          <div class="cover-snow">❄</div>
+
+          <h1>MAGIC SNOW</h1>
+
+          <h2>
+            MANUAL DE USO DEL<br>
+            DATÁFONO · REVO
+          </h2>
+
+          <p class="cover-edition">
+            CENTRO DE FORMACIÓN · NAVIDAD 2026
+          </p>
+
+          <img
+            class="cover-image"
+            src="./datafono.png"
+            alt="Magic Snow · Datáfono REVO"
+          >
+
+          <div class="welcome">
+
+            <h3>¡BIENVENIDO AL MANUAL!</h3>
+
+            <p>
+              Hemos preparado esta guía para ayudarte
+              a gestionar correctamente la operativa
+              de caja y el datáfono durante la campaña
+              Magic Snow.
+            </p>
+
+            <p>
+              Consulta las instrucciones paso a paso
+              y accede a los vídeos tutoriales mediante
+              los códigos QR de cada módulo.
+            </p>
+
+          </div>
+
+          <div class="stats">
+
+            <div>
+              <strong>6</strong>
+              <span>MÓDULOS</span>
+            </div>
+
+            <div>
+              <strong>5</strong>
+              <span>VÍDEOS TUTORIALES</span>
+            </div>
+
+            <div>
+              <strong>1</strong>
+              <span>CENTRO DE AYUDA</span>
+            </div>
+
+          </div>
+
+          <div class="index">
+
+            <h3>ÍNDICE DE CONTENIDOS</h3>
+
+            ${modules.map(m => `
+
+              <a href="#modulo-${m.id}">
+
+                <span class="index-number">
+                  ${number(m.id)}
+                </span>
+
+                <strong>${e(m.title)}</strong>
+
+                <span>→</span>
+
+              </a>
+
+            `).join("")}
+
+          </div>
+
+          ${footer()}
+
+        </section>
+
+      `;
+
+    }
+
+    // CÓDIGOS QR DE LOS VÍDEOS
+
+    function videoQR(m) {
+
+      const url = "https://youtu.be/" + m.video;
+
+      const qr =
+        "https://api.qrserver.com/v1/create-qr-code/"
+        + "?size=250x250&margin=10&data="
+        + encodeURIComponent(url);
+
+      return `
+
+        <div class="video-box">
+
+          <div>
+
+            <strong>VÍDEO TUTORIAL</strong>
+
+            <p>
+              Escanea el código QR para consultar
+              el procedimiento completo.
+            </p>
+
+            <a href="${url}">
+              ${url}
+            </a>
+
+          </div>
+
+          <img
+            class="qr"
+            src="${qr}"
+            alt="QR del vídeo ${e(m.title)}"
+          >
+
+        </div>
+
+      `;
+
+    }
+
+    // INSTRUCCIONES PASO A PASO
+
+    function steps(m) {
+
+      return `
+
+        <h3>INSTRUCCIONES PASO A PASO</h3>
+
+        <div class="steps">
+
+          ${m.steps.map((step, i) => `
+
+            <article class="step">
+
+              <span class="step-number">
+                ${number(i + 1)}
+              </span>
+
+              <div>
+
+                <div class="step-heading">
+
+                  <strong>${e(step.title)}</strong>
+
+                  <small>${e(step.time)}</small>
+
+                </div>
+
+                <p>${e(step.text)}</p>
+
+              </div>
+
+            </article>
+
+          `).join("")}
+
+        </div>
+
+      `;
+
+    }
+
+    // INFORMACIÓN IMPORTANTE
+
+    function important(m) {
+
+      return `
+
+        <div class="important">
+
+          <h3>¡INFORMACIÓN IMPORTANTE!</h3>
+
+          <ul>
+
+            ${m.important.map(text => `
+
+              <li>${e(text)}</li>
+
+            `).join("")}
+
+          </ul>
+
+        </div>
+
+      `;
+
+    }
+
+    // CHECKLIST IMPRIMIBLE
+
+    function checklist(m) {
+
+      return `
+
+        <div class="checklist">
+
+          <h3>CHECKLIST DE COMPROBACIÓN</h3>
+
+          ${m.checklist.map(text => `
+
+            <div class="check-item">
+
+              <span class="checkbox"></span>
+
+              <span>${e(text)}</span>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+
+      `;
+
+    }
+
+    // BLOQUES ESPECIALES DE CADA MÓDULO
+
+    function extra(m) {
+
+      if (m.id === 2) {
+
+        return `
+
+          <div class="fund">
+
+            <span>FONDO INICIAL DE CAJA</span>
+
+            <strong>150,00 €</strong>
+
+            <p>
+              Realiza la apertura de turno
+              antes de comenzar las ventas.
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+      if (m.id === 3) {
+
+        return `
+
+          <div class="two-columns">
+
+            <article class="mini-card">
+
+              <h3>COBRO EN EFECTIVO</h3>
+
+              <p>
+                Introduce el importe recibido,
+                comprueba el cambio y confirma
+                el cobro.
+              </p>
+
+              <p>
+                Recoge el ticket impreso
+                automáticamente.
+              </p>
+
+            </article>
+
+            <article class="mini-card">
+
+              <h3>COBRO CON TARJETA</h3>
+
+              <p>
+                Selecciona el método de pago
+                con tarjeta y utiliza el lector
+                del datáfono.
+              </p>
+
+            </article>
+
+          </div>
+
+          <div class="cash-example">
+
+            <h3>EJEMPLO PRÁCTICO DE COBRO</h3>
+
+            <div>
+              <span>Importe de la venta</span>
+              <strong>19,99 €</strong>
+            </div>
+
+            <div>
+              <span>Efectivo recibido</span>
+              <strong>30,00 €</strong>
+            </div>
+
+            <div class="cash-total">
+              <span>Cambio a devolver</span>
+              <strong>10,01 €</strong>
+            </div>
+
+            <small>
+              Ejemplo formativo.
+              No establece el PVP oficial.
+            </small>
+
+          </div>
+
+        `;
+
+      }
+
+      if (m.id === 4) {
+
+        return `
+
+          <div class="two-columns">
+
+            <article class="mini-card">
+
+              <h3>EFECTIVO</h3>
+
+              <p>Compra en efectivo.</p>
+
+              <strong>↓</strong>
+
+              <p>Devolución en efectivo.</p>
+
+            </article>
+
+            <article class="mini-card">
+
+              <h3>TARJETA</h3>
+
+              <p>Compra con tarjeta.</p>
+
+              <strong>↓</strong>
+
+              <p>Devolución con tarjeta.</p>
+
+            </article>
+
+          </div>
+
+        `;
+
+      }
+
+      if (m.id === 5) {
+
+        return `
+
+          <div class="cash-example">
+
+            <h3>EJEMPLO DE CIERRE DE CAJA</h3>
+
+            <div>
+
+              <span>Fondo inicial</span>
+
+              <strong>150,00 €</strong>
+
+            </div>
+
+            <div>
+
+              <span>Ventas en efectivo</span>
+
+              <strong>150,00 €</strong>
+
+            </div>
+
+            <div class="cash-total">
+
+              <span>Efectivo esperado</span>
+
+              <strong>300,00 €</strong>
+
+            </div>
+
+            <small>
+              Ejemplo simplificado sin devoluciones
+              ni entradas o salidas adicionales
+              de efectivo.
+            </small>
+
+          </div>
+
+        `;
+
+      }
+
+      return "";
+
+    }
+
+    // PREGUNTAS FRECUENTES Y SOPORTE
+
+    function support(m) {
+
+      return `
+
+        <h3>PREGUNTAS FRECUENTES</h3>
+
+        <div class="faq-list">
+
+          ${m.faq.map((faq, i) => `
+
+            <article class="faq">
+
+              <strong>
+                ${number(i + 1)}.
+                ${e(faq.question)}
+              </strong>
+
+              <p>${e(faq.answer)}</p>
+
+            </article>
+
+          `).join("")}
+
+        </div>
+
+        <div class="support">
+
+          <h3>¿NECESITAS AYUDA?</h3>
+
+          <p>
+            ¿Tienes alguna incidencia o necesitas ayuda?
+          </p>
+
+          <p>
+            Contacta directamente con nuestro equipo
+            de soporte interno de La Casa de las Carcasas.
+          </p>
+
+          <strong>
+            ${e(APP_CONTENT.support.email)}
+          </strong>
+
+          ${APP_CONTENT.support.channel
+            ? `<p>${e(APP_CONTENT.support.channel)}</p>`
+            : ""}
+
+        </div>
+
+      `;
+
+    }
+
+    // CREACIÓN DE LOS SEIS MÓDULOS
+
+    function renderModule(m) {
+
+      return `
+
+        <section
+          class="page module"
+          id="modulo-${m.id}"
+        >
+
+          ${header(m)}
+
+          <div class="module-heading">
+
+            <span>
+              MÓDULO ${number(m.id)} DE 06
+            </span>
+
+            <h1>${e(m.title)}</h1>
+
+            <p>${e(m.description)}</p>
+
+          </div>
+
+          ${m.video
+
+            ? `
+
+              ${videoQR(m)}
+
+              ${steps(m)}
+
+              ${extra(m)}
+
+              ${important(m)}
+
+              ${checklist(m)}
+
+            `
+
+            : support(m)
+
+          }
+
+          <div class="completed">
+
+            <span class="checkbox"></span>
+
+            <strong>MÓDULO COMPLETADO</strong>
+
+          </div>
+
+          ${footer()}
+
+        </section>
+
+      `;
+
+    }
+
+    // GENERAR EL MANUAL COMPLETO
+
+    document.getElementById("manual").innerHTML =
+      cover()
+      + modules.map(renderModule).join("");
+
+    // CONTROL DE IMÁGENES
+
+    document.querySelectorAll("img").forEach(img => {
+
+      function hideImage() {
+        img.style.display = "none";
+      }
+
+      img.addEventListener("error", hideImage);
+
+      if (img.complete && !img.naturalWidth) {
+        hideImage();
+      }
+
+    });
+
+    // IMPRIMIR O GUARDAR COMO PDF
+
+    document.getElementById("printButton")
+      .addEventListener("click", async () => {
+
+        const button =
+          document.getElementById("printButton");
+
+        button.disabled = true;
+
+        button.textContent = "Preparando manual...";
+
+        const images = [...document.images];
+
+        await Promise.race([
+
+          Promise.allSettled([
+
+            ...images.map(img =>
+              img.decode
+                ? img.decode()
+                : Promise.resolve()
+            ),
+
+            document.fonts
+              ? document.fonts.ready
+              : Promise.resolve()
+
+          ]),
+
+          new Promise(resolve =>
+            setTimeout(resolve, 5000)
+          )
+
+        ]);
+
+        button.disabled = false;
+
+        button.textContent =
+          "🖨 Imprimir / Guardar PDF";
+
+        window.print();
+
+      });
+
+  </script>
+
+</body>
+
+</html>
