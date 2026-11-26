@@ -1,8 +1,34 @@
 
 (() => {
 
+  "use strict";
+
   const $ = id => document.getElementById(id);
+
   const modules = APP_CONTENT.modules;
+
+  const STORAGE_COMPLETED = "magicSnowCompletedModules";
+  const STORAGE_CHECKS = "magicSnowChecklistV3";
+
+  const esc = value => String(value ?? "").replace(
+    /[&<>"']/g,
+    char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char])
+  );
+
+  const number = n => String(n).padStart(2, "0");
+
+  const euro = n => n.toLocaleString("es-ES", {
+    style: "currency",
+    currency: "EUR"
+  });
+
+  // GUARDADO DEL PROGRESO
 
   function read(key, fallback) {
     try {
@@ -12,581 +38,497 @@
     }
   }
 
-  let completed = read("magicSnowCompletedModules", []);
+  let completed = read(STORAGE_COMPLETED, []);
 
   if (!Array.isArray(completed)) completed = [];
 
   completed = [...new Set(
-    completed.filter(id => modules.some(m => m.id === id))
+    completed.filter(id =>
+      modules.some(m => m.id === id)
+    )
   )];
 
-  let checks = read("magicSnowChecklistState", {}) || {};
-  let current = "home";
+  let checks = read(STORAGE_CHECKS, {});
 
-  try {
-    current = localStorage.getItem("magicSnowCurrentView") || "home";
-  } catch {}
+  if (
+    !checks ||
+    typeof checks !== "object" ||
+    Array.isArray(checks)
+  ) {
+    checks = {};
+  }
+
+  // Siempre comenzar en la bienvenida
+
+  let current = "home";
 
   function save() {
     try {
-      localStorage.setItem(
-        "magicSnowCurrentView",
-        current
-      );
 
       localStorage.setItem(
-        "magicSnowCompletedModules",
+        STORAGE_COMPLETED,
         JSON.stringify(completed)
       );
 
       localStorage.setItem(
-        "magicSnowChecklistState",
+        STORAGE_CHECKS,
         JSON.stringify(checks)
       );
-    } catch {}
+
+    } catch {
+
+      console.warn("No se ha podido guardar el progreso.");
+
+    }
   }
 
-  const esc = s => String(s ?? "").replace(
-    /[&<>"']/g,
-    c => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[c])
-  );
+  // COMPONENTES
 
-  const num = n => String(n).padStart(2, "0");
+  function button(text, view, primary = false) {
 
-  function btn(label, view, cls = "secondary-btn") {
     return `
       <button
         type="button"
-        class="${cls}"
-        data-view="${view}"
+        class="btn ${primary ? "primary" : "secondary"}"
+        data-view="${esc(view)}"
       >
-        ${label}
+        ${esc(text)}
       </button>
     `;
+
   }
 
-  function sidebar() {
+  function snow() {
+
+    return `
+      <div class="snow-decoration" aria-hidden="true">
+        <span>❄</span>
+        <span>✧</span>
+        <span>❄</span>
+        <span>✦</span>
+        <span>❄</span>
+        <span>✧</span>
+      </div>
+    `;
+
+  }
+
+  // NAVEGACIÓN LATERAL
+
+  function renderNavigation() {
 
     const progress = Math.round(
       completed.length / modules.length * 100
     );
 
-    $("progressPercent").textContent = progress + "%";
-    $("progressBarFill").style.width = progress + "%";
-    $("completedCount").textContent = completed.length;
+    $("progressPercent").textContent =
+      progress + "%";
 
-    $("sidebarNav").innerHTML = modules.map(m => `
+    $("progressFill").style.width =
+      progress + "%";
+
+    $("progressCount").textContent =
+      `${completed.length} de 6 módulos completados`;
+
+    $("navigation").innerHTML = modules.map(m => `
+
       <button
         type="button"
         class="nav-item
           ${current === String(m.id) ? "active" : ""}
           ${completed.includes(m.id) ? "completed" : ""}"
         data-view="${m.id}"
+        ${current === String(m.id)
+          ? 'aria-current="page"'
+          : ""}
       >
 
-        <div class="nav-index">
-          ${completed.includes(m.id) ? "✓" : num(m.id)}
-        </div>
+        <span class="nav-number">
+          ${completed.includes(m.id)
+            ? "✓"
+            : number(m.id)}
+        </span>
 
-        <div class="nav-label">
+        <span class="nav-info">
 
-          <span class="nav-title">
-            ${esc(m.title)}
-          </span>
+          <strong>${esc(m.title)}</strong>
 
-          <span class="nav-status">
+          <small>
             ${completed.includes(m.id)
               ? "Completado"
               : "Pendiente"}
-          </span>
+          </small>
 
-        </div>
+        </span>
 
       </button>
+
     `).join("");
+
+    const home = document.querySelector(".home-button");
+
+    home.classList.toggle(
+      "active",
+      current === "home"
+    );
+
   }
 
-  function go(view) {
+  // MENÚ MÓVIL
 
-    current = String(view);
-
-    save();
-    render();
+  function closeMenu() {
 
     $("sidebar").classList.remove("open");
+    $("overlay").classList.remove("visible");
 
     $("menuToggle").setAttribute(
       "aria-expanded",
       "false"
     );
 
-    window.scrollTo(0, 0);
   }
 
-  function simulator(id) {
+  $("menuToggle").addEventListener("click", () => {
 
-    if (id !== 3 && id !== 5) return "";
+    const open = $("sidebar").classList.toggle("open");
 
-    const payment = id === 3;
+    $("overlay").classList.toggle("visible", open);
 
-    return `
-      <section class="panel simulator-panel">
-
-        <div class="sim-header">
-          <span>MAGIC SNOW · FORMACIÓN REVO</span>
-          <h4>
-            ${payment
-              ? "SIMULADOR DE COBRO"
-              : "SIMULADOR DE CIERRE DE CAJA"}
-          </h4>
-        </div>
-
-        <p>
-          Practica con este ejercicio interactivo.
-          No realiza operaciones reales.
-        </p>
-
-        ${!payment ? `
-          <div class="fund-card">
-            <span>FONDO INICIAL DE CAJA</span>
-            <strong>150,00 €</strong>
-          </div>
-        ` : ""}
-
-        <div class="sim-fields">
-
-          <label>
-            ${payment
-              ? "Importe de venta (€)"
-              : "Ventas en efectivo (€)"}
-
-            <input
-              id="simA"
-              class="support-input"
-              type="number"
-              min="0"
-              step="0.01"
-              value="${payment ? "19.99" : "150"}"
-            >
-          </label>
-
-          <label>
-            ${payment
-              ? "Efectivo recibido (€)"
-              : "Efectivo contado (€)"}
-
-            <input
-              id="simB"
-              class="support-input"
-              type="number"
-              min="0"
-              step="0.01"
-              value="${payment ? "30" : "300"}"
-            >
-          </label>
-
-        </div>
-
-        ${payment ? `
-          <div class="cash-options">
-            ${[20, 30, 50, 100].map(n => `
-              <button
-                type="button"
-                class="secondary-btn"
-                data-cash="${n}"
-              >
-                ${n} €
-              </button>
-            `).join("")}
-          </div>
-        ` : ""}
-
-        <div
-          class="sim-result"
-          id="simResult"
-          aria-live="polite"
-        ></div>
-
-        <button
-          type="button"
-          class="secondary-btn"
-          id="simReset"
-        >
-          Reiniciar simulación
-        </button>
-
-        <p class="sim-disclaimer">
-          ${payment
-            ? "Ejercicio formativo. El importe de ejemplo no establece el PVP oficial."
-            : "Ejercicio simplificado sin devoluciones ni entradas o salidas adicionales de efectivo."}
-        </p>
-
-      </section>
-    `;
-  }
-
-  function setupSim(id) {
-
-    if (!$("simA")) return;
-
-    const format = n => n.toLocaleString(
-      "es-ES",
-      {
-        style: "currency",
-        currency: "EUR"
-      }
+    $("menuToggle").setAttribute(
+      "aria-expanded",
+      String(open)
     );
 
-    function update() {
+  });
 
-      const a = $("simA").valueAsNumber;
-      const b = $("simB").valueAsNumber;
+  $("overlay").addEventListener("click", closeMenu);
 
-      if (
-        !Number.isFinite(a) ||
-        !Number.isFinite(b) ||
-        a < 0 ||
-        b < 0
-      ) {
+  document.addEventListener("keydown", event => {
 
-        $("simResult").textContent =
-          "Introduce importes válidos.";
+    if (event.key === "Escape") closeMenu();
 
-        return;
-      }
+  });
 
-      const expected = Math.round(
-        (a + (id === 5 ? 150 : 0)) * 100
-      ) / 100;
+  function go(view) {
 
-      const diff = Math.round(
-        (b - expected) * 100
-      ) / 100;
+    current = String(view);
 
-      if (id === 3) {
+    closeMenu();
+    render();
 
-        $("simResult").innerHTML = `
-          <span>
-            ${diff >= 0
-              ? "CAMBIO A DEVOLVER"
-              : "IMPORTE PENDIENTE"}
-          </span>
+    window.scrollTo({
+      top: 0,
+      behavior: "instant"
+    });
 
-          <strong>
-            ${format(Math.abs(diff))}
-          </strong>
-        `;
+    $("content").focus({
+      preventScroll: true
+    });
 
-      } else {
-
-        $("simResult").innerHTML = `
-          <span>EFECTIVO ESPERADO</span>
-
-          <strong>${format(expected)}</strong>
-
-          <p>
-            ${diff === 0
-              ? "✓ CAJA CUADRADA"
-              : diff > 0
-                ? "SOBRANTE: " + format(diff)
-                : "FALTANTE: " + format(-diff)}
-          </p>
-        `;
-      }
-    }
-
-    $("simA").oninput = update;
-    $("simB").oninput = update;
-
-    $("simReset").onclick = () => {
-
-      $("simA").value = id === 3 ? "19.99" : "150";
-      $("simB").value = id === 3 ? "30" : "300";
-
-      update();
-    };
-
-    document.querySelectorAll("[data-cash]")
-      .forEach(button => {
-
-        button.onclick = () => {
-
-          $("simB").value = button.dataset.cash;
-          update();
-        };
-      });
-
-    update();
   }
 
-  function finalScreen() {
-
-    return `
-      <section class="final-card">
-
-        <div class="finish-icon">✓</div>
-
-        <p class="card-kicker">
-          MAGIC SNOW · CENTRO DE FORMACIÓN
-        </p>
-
-        <h3>¡FORMACIÓN COMPLETADA!</h3>
-
-        <p>
-          Ya conoces los principales procedimientos
-          de REVO para la campaña Magic Snow.
-        </p>
-
-        <p>
-          <strong>
-            ¡Gracias por formar parte del equipo!
-          </strong>
-        </p>
-
-        <div class="final-progress">
-          6 / 6 MÓDULOS COMPLETADOS
-        </div>
-
-        ${btn("Volver al inicio", "home", "primary-btn")}
-
-      </section>
-    `;
-  }
+  // PANTALLA DE BIENVENIDA
 
   function renderWelcome() {
 
-    const nextModule =
-      modules.find(m => !completed.includes(m.id))?.id || 1;
+    const welcome = APP_CONTENT.welcome;
 
-    $("contentArea").innerHTML = `
+    const next = modules.find(
+      m => !completed.includes(m.id)
+    );
+
+    $("content").innerHTML = `
+
+      <section class="welcome-banner">
+
+        ${snow()}
+
+        <div class="welcome-brand">
+          LA CASA DE LAS CARCASAS
+        </div>
+
+        <div class="welcome-snowflake">❄</div>
+
+        <h1>MAGIC SNOW</h1>
+
+        <p>
+          MANUAL DE USO DEL DATÁFONO · REVO
+        </p>
+
+        <span class="welcome-edition">
+          CENTRO DE FORMACIÓN · NAVIDAD 2026
+        </span>
+
+      </section>
 
       <section class="welcome-card">
 
-        <div class="welcome-hero">
+        <div class="welcome-copy">
 
-          <div class="welcome-content">
+          <span class="eyebrow">
+            TU CENTRO DE FORMACIÓN
+          </span>
 
-            <p class="card-kicker">
-              LA CASA DE LAS CARCASAS · CENTRO DE FORMACIÓN
-            </p>
+          <h2>${esc(welcome.title)}</h2>
 
-            <h3>¡BIENVENIDO A MAGIC SNOW!</h3>
+          <h3>${esc(welcome.subtitle)}</h3>
 
-            <p>
+          <p>${esc(welcome.description)}</p>
+
+          <p>
+            Aprende a tu ritmo y consulta los
+            procedimientos siempre que lo necesites.
+            Tu progreso se guardará automáticamente.
+          </p>
+
+          <div class="button-row">
+
+            ${next
+              ? button(
+                  completed.length
+                    ? "CONTINUAR FORMACIÓN →"
+                    : "COMENZAR FORMACIÓN →",
+                  next.id,
+                  true
+                )
+              : button(
+                  "VER FORMACIÓN COMPLETADA",
+                  "done",
+                  true
+                )
+            }
+
+            ${button("DUDAS Y SOPORTE", 6)}
+
+          </div>
+
+        </div>
+
+        <div class="device-visual">
+
+          ${snow()}
+
+          <img
+            src="${esc(welcome.image)}"
+            alt="Datáfono Magic Snow"
+            id="devicePhoto"
+          >
+
+          <div id="deviceFallback" hidden>
+
+            <div class="device-drawing">
+
+              <div class="device-top">
+                REVO
+              </div>
+
+              <div class="device-screen">
+                <span>❄</span>
+                <strong>MAGIC SNOW</strong>
+                <small>Venta rápida</small>
+                <div>✓</div>
+              </div>
+
+              <div class="device-keys">
+                ${Array.from(
+                  {length: 12},
+                  () => "<i></i>"
+                ).join("")}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="stats-grid">
+
+        <article class="stat-card">
+          <span class="stat-icon">▤</span>
+          <strong>6</strong>
+          <span>MÓDULOS DE FORMACIÓN</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-icon">▷</span>
+          <strong>5</strong>
+          <span>VÍDEOS TUTORIALES</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-icon">?</span>
+          <strong>1</strong>
+          <span>CENTRO DE AYUDA</span>
+        </article>
+
+      </section>
+
+      <div class="section-heading">
+        <span class="eyebrow">APRENDE PASO A PASO</span>
+        <h2>Explora los módulos</h2>
+        <p>Accede directamente al contenido que necesites.</p>
+      </div>
+
+      <section class="module-grid">
+
+        ${modules.map(m => `
+
+          <button
+            class="module-card"
+            type="button"
+            data-view="${m.id}"
+          >
+
+            <div class="module-card-top">
+
+              <span class="module-card-icon">
+                ${esc(m.icon)}
+              </span>
+
+              <span class="module-card-number">
+                MÓDULO ${number(m.id)}
+              </span>
+
+            </div>
+
+            <h3>${esc(m.title)}</h3>
+
+            <p>${esc(m.description)}</p>
+
+            <div class="module-card-bottom">
+
+              <span>
+                ${m.video ? "▷ Vídeo tutorial" : "Centro de ayuda"}
+              </span>
+
               <strong>
-                Aprende a utilizar REVO paso a paso.
+                ${completed.includes(m.id)
+                  ? "✓ Completado"
+                  : "Acceder →"}
               </strong>
-            </p>
-
-            <p>
-              Hemos preparado esta guía para ayudarte
-              a gestionar correctamente la operativa
-              de caja y el datáfono durante la campaña
-              Magic Snow.
-            </p>
-
-            <p>
-              A través de nuestros vídeos tutoriales
-              aprenderás a iniciar el sistema, abrir
-              la caja, realizar cobros, gestionar
-              devoluciones y completar el cierre de turno.
-            </p>
-
-            <div class="welcome-actions">
-
-              ${btn(
-                completed.length
-                  ? "CONTINUAR FORMACIÓN"
-                  : "COMENZAR FORMACIÓN",
-                nextModule,
-                "primary-btn"
-              )}
-
-              ${btn("DUDAS Y SOPORTE", 6)}
 
             </div>
 
-          </div>
+          </button>
 
-          <div class="welcome-visual">
-
-            <div class="device-card">
-
-              <span class="snow-deco snow-1">❄</span>
-              <span class="snow-deco snow-2">✦</span>
-              <span class="snow-deco snow-3">❄</span>
-
-              <div class="device-illustration">
-
-                <img
-                  src="assets/datafono.png"
-                  alt="Datáfono Magic Snow"
-                  id="devicePhoto"
-                >
-
-                <span id="deviceFallback" hidden>
-                  💳
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="info-card">
-
-              <h4>Tu formación</h4>
-
-              <div class="training-stats">
-
-                <div class="stat-card">
-                  <strong>6</strong>
-                  <span>MÓDULOS</span>
-                </div>
-
-                <div class="stat-card">
-                  <strong>5</strong>
-                  <span>VÍDEOS</span>
-                </div>
-
-                <div class="stat-card">
-                  <strong>1</strong>
-                  <span>SOPORTE</span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
+        `).join("")}
 
       </section>
 
-      <section class="module-overview">
-
-        <h3>Explora los módulos de formación</h3>
-
-        <div class="overview-grid">
-
-          ${modules.map(m => `
-
-            <button
-              type="button"
-              class="overview-card"
-              data-view="${m.id}"
-            >
-
-              <span class="overview-number">
-                ${completed.includes(m.id)
-                  ? "✓"
-                  : num(m.id)}
-              </span>
-
-              <strong>${esc(m.title)}</strong>
-
-              <p>${esc(m.description)}</p>
-
-              <span class="overview-link">
-                ${completed.includes(m.id)
-                  ? "Volver a consultar"
-                  : "Acceder al módulo"} →
-              </span>
-
-            </button>
-
-          `).join("")}
-
-        </div>
-
-      </section>
-
-      ${completed.length === 6 ? finalScreen() : ""}
+      ${completed.length === 6
+        ? `
+          <section class="success-notice">
+            ✓ Has completado toda la formación.
+            ${button("Ver finalización", "done")}
+          </section>
+        `
+        : ""}
 
     `;
 
     const photo = $("devicePhoto");
 
     function fallback() {
-
       photo.hidden = true;
       $("deviceFallback").hidden = false;
     }
 
-    photo.onerror = fallback;
+    photo.addEventListener("error", fallback);
 
     if (photo.complete && !photo.naturalWidth) {
       fallback();
     }
+
   }
 
-  function renderVideoModule(m) {
+  // REPRODUCTOR DE VÍDEO
+
+  function renderVideo(m) {
 
     return `
 
       <section class="panel video-panel">
 
-        <div class="video-heading">
-          <h4>VÍDEO TUTORIAL</h4>
-          <span class="tag">Módulo ${num(m.id)}</span>
+        <div class="panel-heading">
+
+          <h3>VÍDEO TUTORIAL</h3>
+
+          <span class="tag">
+            MÓDULO ${number(m.id)}
+          </span>
+
         </div>
 
-        <div class="video-frame-wrap">
+        <div class="video-wrapper">
 
           <iframe
             id="tutorial"
-            src="https://www.youtube.com/embed/${m.videoId}"
+            src="https://www.youtube.com/embed/${m.video}"
             title="${esc(m.title)}"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
           ></iframe>
 
         </div>
 
-        <p class="video-external">
-          <a
-            href="https://youtu.be/${m.videoId}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Abrir vídeo en YouTube ↗
-          </a>
-        </p>
+        <a
+          class="video-link"
+          href="https://youtu.be/${m.video}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Abrir vídeo en YouTube ↗
+        </a>
 
       </section>
 
+    `;
+
+  }
+
+  // INSTRUCCIONES DE LAS TRANSCRIPCIONES
+
+  function renderSteps(m) {
+
+    return `
+
       <section class="panel">
 
-        <h4>INSTRUCCIONES PASO A PASO</h4>
+        <div class="panel-heading">
+          <h3>INSTRUCCIONES PASO A PASO</h3>
+        </div>
 
-        <div class="step-list">
+        <p class="muted">
+          Pulsa sobre el minuto de cada paso para
+          consultar ese momento del tutorial.
+        </p>
+
+        <div class="steps">
 
           ${m.steps.map((step, i) => `
 
             <article class="step">
 
               <span class="step-number">
-                ${num(i + 1)}
+                ${number(i + 1)}
               </span>
 
-              <div>
+              <div class="step-copy">
 
-                <h5>${esc(step[1])}</h5>
+                <h4>${esc(step.title)}</h4>
 
-                <p>${esc(step[2])}</p>
+                <p>${esc(step.text)}</p>
 
                 <button
                   type="button"
                   class="timestamp"
-                  data-time="${step[0]}"
+                  data-time="${esc(step.time)}"
                 >
-                  ▶ ${step[0]}
+                  ▶ ${esc(step.time)}
                 </button>
 
               </div>
@@ -599,85 +541,130 @@
 
       </section>
 
-      ${m.id === 2 ? `
+    `;
 
-        <section class="fund-highlight">
+  }
+
+  // BLOQUES ESPECIALES
+
+  function renderExtra(m) {
+
+    if (m.id === 2) {
+
+      return `
+
+        <section class="fund-card">
+
           <span>FONDO INICIAL DE CAJA</span>
+
           <strong>150,00 €</strong>
-          <p>Antes de comenzar las ventas.</p>
+
+          <p>
+            Recuerda realizar la apertura
+            antes de comenzar las ventas.
+          </p>
+
         </section>
 
-      ` : ""}
+      `;
 
-      ${m.id === 3 || m.id === 4 ? `
+    }
 
-        <div class="payment-grid">
+    if (m.id === 3 || m.id === 4) {
 
-          <section class="payment-card cash-card">
+      const payment = m.id === 3;
+
+      return `
+
+        <section class="payment-grid">
+
+          <article class="payment-card cash">
 
             <span class="payment-icon">€</span>
 
-            <h4>EFECTIVO</h4>
+            <h3>EFECTIVO</h3>
 
             <p>
-              ${m.id === 3
-                ? "Introduce el efectivo recibido y comprueba el cambio antes de finalizar el cobro."
-                : "Si la compra se realizó en efectivo, la devolución se realizará en efectivo."}
+              ${payment
+                ? "Introduce el importe recibido, comprueba el cambio y confirma el cobro mediante el icono del billete."
+                : "Si la compra se realizó en efectivo, devuelve el importe en efectivo."}
             </p>
 
-          </section>
+          </article>
 
-          <section class="payment-card card-card">
+          <article class="payment-card card-payment">
 
             <span class="payment-icon">▤</span>
 
-            <h4>TARJETA</h4>
+            <h3>TARJETA</h3>
 
             <p>
-              ${m.id === 3
+              ${payment
                 ? "Selecciona el pago con tarjeta y utiliza el lector del datáfono."
-                : "Si la compra se realizó con tarjeta, REVO gestiona la devolución con tarjeta."}
+                : "Si la compra se realizó con tarjeta, la devolución se gestiona mediante tarjeta."}
             </p>
 
-          </section>
+          </article>
 
-        </div>
+        </section>
 
-      ` : ""}
+      `;
 
-      <section class="panel important-box">
+    }
 
-        <h4>⚠ INFORMACIÓN IMPORTANTE</h4>
+    return "";
+
+  }
+
+  // INFORMACIÓN IMPORTANTE
+
+  function renderImportant(m) {
+
+    return `
+
+      <section class="panel important">
+
+        <h3>! &nbsp; INFORMACIÓN IMPORTANTE</h3>
 
         <ul>
+
           ${m.important.map(text => `
             <li>${esc(text)}</li>
           `).join("")}
+
         </ul>
 
       </section>
 
-      ${simulator(m.id)}
+    `;
+
+  }
+
+  // CHECKLISTS
+
+  function renderChecklist(m) {
+
+    return `
 
       <section class="panel">
 
-        <div class="checklist-heading">
+        <div class="panel-heading">
 
-          <h4>CHECKLIST DE COMPROBACIÓN</h4>
+          <h3>CHECKLIST DE COMPROBACIÓN</h3>
 
-          <span id="checkCount"></span>
+          <strong id="checkCount"></strong>
 
         </div>
 
-        <div class="check-progress">
-          <div id="checkProgressFill"></div>
+        <div class="check-track">
+          <div id="checkFill"></div>
         </div>
 
         <div class="checklist">
 
           ${m.checklist.map((text, i) => `
 
-            <label class="checklist-item">
+            <label class="check-item">
 
               <input
                 type="checkbox"
@@ -696,36 +683,280 @@
       </section>
 
     `;
+
   }
+
+  function updateChecklist(m) {
+
+    if (!$("checkCount") || !m.checklist) return;
+
+    const count = m.checklist.filter(
+      (_, i) => checks[m.id]?.[i]
+    ).length;
+
+    $("checkCount").textContent =
+      `${count} / ${m.checklist.length}`;
+
+    $("checkFill").style.width =
+      `${count / m.checklist.length * 100}%`;
+
+  }
+
+  // SIMULADORES
+
+  function renderSimulator(m) {
+
+    if (m.id !== 3 && m.id !== 5) return "";
+
+    const payment = m.id === 3;
+
+    return `
+
+      <section class="panel simulator">
+
+        <div class="sim-heading">
+
+          <span>MAGIC SNOW · PRÁCTICA INTERACTIVA</span>
+
+          <h3>
+            ${payment
+              ? "SIMULADOR DE COBRO"
+              : "SIMULADOR DE CIERRE DE CAJA"}
+          </h3>
+
+        </div>
+
+        <p>
+          Practica con los importes de ejemplo.
+          No se realizan operaciones reales.
+        </p>
+
+        ${!payment
+          ? `
+            <div class="sim-fund">
+              Fondo inicial de caja
+              <strong>150,00 €</strong>
+            </div>
+          `
+          : ""}
+
+        <div class="sim-fields">
+
+          <label>
+
+            ${payment
+              ? "Importe de la venta (€)"
+              : "Ventas en efectivo (€)"}
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              id="simA"
+              value="${payment ? "19.99" : "150"}"
+            >
+
+          </label>
+
+          <label>
+
+            ${payment
+              ? "Efectivo recibido (€)"
+              : "Efectivo contado (€)"}
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              id="simB"
+              value="${payment ? "30" : "300"}"
+            >
+
+          </label>
+
+        </div>
+
+        ${payment
+          ? `
+            <div class="cash-buttons">
+
+              ${[20, 30, 50, 100].map(n => `
+                <button
+                  type="button"
+                  class="btn secondary"
+                  data-cash="${n}"
+                >
+                  ${n} €
+                </button>
+              `).join("")}
+
+            </div>
+          `
+          : ""}
+
+        <div
+          class="sim-result"
+          id="simResult"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="button"
+          class="btn secondary"
+          id="simReset"
+        >
+          Reiniciar simulación
+        </button>
+
+        <small class="sim-note">
+
+          ${payment
+            ? "Ejemplo formativo. El importe utilizado no establece el PVP oficial."
+            : "Ejercicio simplificado sin devoluciones ni entradas o salidas adicionales de efectivo."}
+
+        </small>
+
+      </section>
+
+    `;
+
+  }
+
+  function setupSimulator(m) {
+
+    if (!$("simA")) return;
+
+    const payment = m.id === 3;
+
+    function calculate() {
+
+      const a = $("simA").valueAsNumber;
+      const b = $("simB").valueAsNumber;
+
+      if (
+        !Number.isFinite(a) ||
+        !Number.isFinite(b) ||
+        a < 0 ||
+        b < 0
+      ) {
+
+        $("simResult").textContent =
+          "Introduce importes válidos.";
+
+        return;
+
+      }
+
+      const aCents = Math.round(a * 100);
+      const bCents = Math.round(b * 100);
+
+      const expected =
+        aCents + (payment ? 0 : 15000);
+
+      const difference = bCents - expected;
+
+      if (payment) {
+
+        $("simResult").innerHTML = `
+
+          <span>
+            ${difference >= 0
+              ? "CAMBIO A DEVOLVER"
+              : "IMPORTE PENDIENTE"}
+          </span>
+
+          <strong>
+            ${euro(Math.abs(difference) / 100)}
+          </strong>
+
+        `;
+
+      } else {
+
+        $("simResult").innerHTML = `
+
+          <span>EFECTIVO ESPERADO</span>
+
+          <strong>${euro(expected / 100)}</strong>
+
+          <p>
+            ${difference === 0
+              ? "✓ CAJA CUADRADA"
+              : difference > 0
+                ? "SOBRANTE: " + euro(difference / 100)
+                : "FALTANTE: " + euro(-difference / 100)}
+          </p>
+
+        `;
+
+      }
+
+    }
+
+    $("simA").addEventListener("input", calculate);
+    $("simB").addEventListener("input", calculate);
+
+    $("simReset").onclick = () => {
+
+      $("simA").value = payment ? "19.99" : "150";
+      $("simB").value = payment ? "30" : "300";
+
+      calculate();
+
+    };
+
+    document.querySelectorAll("[data-cash]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          $("simB").value = button.dataset.cash;
+
+          calculate();
+
+        };
+
+      });
+
+    calculate();
+
+  }
+
+  // CENTRO DE AYUDA
 
   function renderSupport(m) {
 
     const support = APP_CONTENT.support;
 
     const link =
-      /^(https:\/\/|mailto:)/i.test(support.buttonLink)
-        ? support.buttonLink
-        : "";
+      /^(https:\/\/|mailto:)/i.test(support.link)
+        ? support.link
+        : support.email
+          ? "mailto:" + support.email
+          : "";
 
     return `
 
       <section class="panel">
 
-        <h4>PREGUNTAS FRECUENTES</h4>
+        <h3>PREGUNTAS FRECUENTES</h3>
+
+        <p class="muted">
+          Selecciona una pregunta para consultar
+          la respuesta.
+        </p>
 
         <div class="faq-list">
 
           ${m.faq.map(faq => `
 
-            <details class="faq-item">
+            <details class="faq">
 
-              <summary class="faq-question">
-                ${esc(faq[0])}
+              <summary>
+                ${esc(faq.question)}
               </summary>
 
-              <p class="faq-text">
-                ${esc(faq[1])}
-              </p>
+              <p>${esc(faq.answer)}</p>
 
             </details>
 
@@ -739,157 +970,151 @@
 
         <div class="support-icon">?</div>
 
-        <h4>¿NECESITAS AYUDA?</h4>
+        <div>
 
-        <p>
-          ¿Tienes alguna incidencia o necesitas ayuda?
-          Contacta con el equipo de soporte interno
-          de La Casa de las Carcasas.
-        </p>
+          <h3>¿NECESITAS AYUDA?</h3>
 
-        ${support.email ? `
           <p>
-            <strong>Correo:</strong>
-            ${esc(support.email)}
+            ¿Tienes alguna incidencia o necesitas ayuda?
           </p>
-        ` : ""}
 
-        ${support.channel ? `
           <p>
-            <strong>Canal de soporte:</strong>
-            ${esc(support.channel)}
-          </p>
-        ` : ""}
-
-        ${link ? `
-
-          <a
-            class="contact-btn"
-            href="${esc(link)}"
-          >
-            Contactar soporte
-          </a>
-
-        ` : `
-
-          <p class="support-pending">
-            Canal y datos de contacto pendientes
-            de confirmar.
+            Contacta directamente con nuestro equipo
+            de soporte interno de La Casa de las Carcasas.
           </p>
 
-        `}
+          ${support.email
+            ? `<p><strong>Correo:</strong> ${esc(support.email)}</p>`
+            : ""}
+
+          ${support.channel
+            ? `<p><strong>Canal:</strong> ${esc(support.channel)}</p>`
+            : ""}
+
+          ${link
+            ? `
+              <a
+                href="${esc(link)}"
+                class="btn primary"
+              >
+                Contactar con soporte
+              </a>
+            `
+            : `
+              <p class="muted">
+                Datos de contacto pendientes de incorporar.
+              </p>
+            `}
+
+        </div>
 
       </section>
 
     `;
+
   }
 
-  function render() {
+  // PANTALLA DE MÓDULO
 
-    sidebar();
+  function renderModule(m) {
 
-    const area = $("contentArea");
+    const done = completed.includes(m.id);
 
-    if (current === "done" && completed.length === 6) {
-      area.innerHTML = finalScreen();
-      return;
-    }
+    $("content").innerHTML = `
 
-    const m = modules.find(
-      module => String(module.id) === current
-    );
+      <section class="module-header">
 
-    if (!m) {
-      renderWelcome();
-      return;
-    }
+        <div>
 
-    const body = m.videoId
-      ? renderVideoModule(m)
-      : renderSupport(m);
-
-    area.innerHTML = `
-
-      <section class="module-layout">
-
-        <div class="module-header">
-
-          <div class="module-title-wrap">
-
-            <p class="module-number">
-              MÓDULO ${num(m.id)} DE 06
-            </p>
-
-            <h3>${esc(m.title)}</h3>
-
-            <p class="module-description">
-              ${esc(m.description)}
-            </p>
-
-          </div>
-
-          <span class="tag">
-            ${completed.includes(m.id)
-              ? "✓ Completado"
-              : "Pendiente"}
+          <span class="eyebrow">
+            MÓDULO ${number(m.id)} DE 06
           </span>
 
-        </div>
+          <h1>${esc(m.title)}</h1>
 
-        ${body}
-
-        <section class="panel complete-panel">
-
-          <div>
-
-            <h4>¿HAS TERMINADO ESTE MÓDULO?</h4>
-
-            <p>
-              Marca este apartado como completado
-              para guardar tu progreso.
-            </p>
-
-          </div>
-
-          <button
-            type="button"
-            class="complete-btn"
-            id="completeModuleBtn"
-          >
-            ${completed.includes(m.id)
-              ? "✓ Completado · Desmarcar"
-              : "Marcar como completado"}
-          </button>
-
-        </section>
-
-        <div class="nav-buttons">
-
-          ${btn("Volver al inicio", "home")}
-
-          ${m.id > 1
-            ? btn("← Anterior", m.id - 1)
-            : ""}
-
-          ${m.id < 6
-            ? btn("Siguiente →", m.id + 1, "primary-btn")
-            : ""}
-
-          ${completed.length === 6
-            ? btn("Ver finalización", "done", "primary-btn")
-            : ""}
+          <p>${esc(m.description)}</p>
 
         </div>
+
+        <span
+          class="status ${done ? "done" : ""}"
+          id="moduleStatus"
+        >
+          ${done ? "✓ Completado" : "Pendiente"}
+        </span>
 
       </section>
 
+      ${m.video
+        ? `
+          ${renderVideo(m)}
+          ${renderSteps(m)}
+          ${renderExtra(m)}
+          ${renderImportant(m)}
+          ${renderSimulator(m)}
+          ${renderChecklist(m)}
+        `
+        : renderSupport(m)
+      }
+
+      <section class="panel completion-panel">
+
+        <div>
+
+          <h3>¿HAS TERMINADO ESTE MÓDULO?</h3>
+
+          <p>
+            Marca este apartado como completado
+            para guardar tu progreso.
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          id="completeButton"
+          class="btn primary"
+        >
+          ${done
+            ? "✓ Completado · Desmarcar"
+            : "Marcar como completado"}
+        </button>
+
+      </section>
+
+      <div class="module-navigation">
+
+        ${button("⌂ Volver al inicio", "home")}
+
+        ${m.id > 1
+          ? button("← Anterior", m.id - 1)
+          : ""}
+
+        ${m.id < 6
+          ? button("Siguiente módulo →", m.id + 1, true)
+          : ""}
+
+        ${completed.length === 6
+          ? button("Ver finalización", "done", true)
+          : ""}
+
+      </div>
+
     `;
 
-    $("completeModuleBtn").onclick = () => {
+    $("completeButton").onclick = () => {
 
-      completed = completed.includes(m.id)
-        ? completed.filter(id => id !== m.id)
-        : [...completed, m.id];
+      if (completed.includes(m.id)) {
+
+        completed = completed.filter(
+          id => id !== m.id
+        );
+
+      } else {
+
+        completed.push(m.id);
+
+      }
 
       save();
 
@@ -899,74 +1124,147 @@
 
       } else {
 
-        sidebar();
+        renderNavigation();
 
-        $("completeModuleBtn").textContent =
-          completed.includes(m.id)
+        const done = completed.includes(m.id);
+
+        $("completeButton").textContent =
+          done
             ? "✓ Completado · Desmarcar"
             : "Marcar como completado";
 
-        area.querySelector(".module-header .tag")
-          .textContent = completed.includes(m.id)
-            ? "✓ Completado"
-            : "Pendiente";
+        $("moduleStatus").textContent =
+          done ? "✓ Completado" : "Pendiente";
+
+        $("moduleStatus").classList.toggle(
+          "done",
+          done
+        );
+
       }
+
     };
 
-    function updateCount() {
-
-      if (!$("checkCount") || !m.checklist) return;
-
-      const total = m.checklist.length;
-
-      const count = m.checklist.filter(
-        (_, i) => checks[m.id]?.[i]
-      ).length;
-
-      $("checkCount").textContent =
-        `${count} / ${total}`;
-
-      $("checkProgressFill").style.width =
-        `${total ? count / total * 100 : 0}%`;
-    }
-
-    area.querySelectorAll("[data-check]")
+    document.querySelectorAll("[data-check]")
       .forEach(input => {
 
         input.onchange = () => {
 
-          checks[m.id] ??= {};
+          if (!checks[m.id]) checks[m.id] = {};
 
           checks[m.id][input.dataset.check] =
             input.checked;
 
           save();
-          updateCount();
+          updateChecklist(m);
+
         };
+
       });
 
-    updateCount();
-    setupSim(m.id);
-
-    area.querySelectorAll("[data-time]")
+    document.querySelectorAll("[data-time]")
       .forEach(button => {
 
         button.onclick = () => {
 
-          const [min, sec] =
+          const [minutes, seconds] =
             button.dataset.time.split(":").map(Number);
 
-          const seconds = min * 60 + sec;
+          const start = minutes * 60 + seconds;
 
           $("tutorial").src =
-            `https://www.youtube.com/embed/${m.videoId}?start=${seconds}&autoplay=1`;
+            `https://www.youtube.com/embed/${m.video}?start=${start}&autoplay=1`;
 
           $("tutorial").scrollIntoView({
             behavior: "smooth",
             block: "center"
           });
+
         };
+
       });
+
+    updateChecklist(m);
+    setupSimulator(m);
+
+  }
+
+  // FORMACIÓN COMPLETADA
+
+  function renderFinal() {
+
+    $("content").innerHTML = `
+
+      <section class="final-screen">
+
+        ${snow()}
+
+        <span class="final-icon">✓</span>
+
+        <span class="eyebrow">
+          MAGIC SNOW · CENTRO DE FORMACIÓN
+        </span>
+
+        <h1>¡FORMACIÓN COMPLETADA!</h1>
+
+        <p>
+          Ya conoces los principales procedimientos
+          de REVO para la campaña Magic Snow.
+        </p>
+
+        <div class="final-stat">
+
+          <strong>100%</strong>
+
+          <span>
+            6 DE 6 MÓDULOS COMPLETADOS
+          </span>
+
+        </div>
+
+        <h3>
+          ¡Gracias por formar parte del equipo!
+        </h3>
+
+        ${button("VOLVER AL MANUAL", "home", true)}
+
+      </section>
+
+    `;
+
+  }
+
+  // CONTROL GENERAL
+
+  function render() {
+
+    renderNavigation();
+
+    if (
+      current === "done" &&
+      completed.length === 6
+    ) {
+
+      renderFinal();
+      return;
+
+    }
+
+    const m = modules.find(
+      item => String(item.id) === current
+    );
+
+    if (m) {
+
+      renderModule(m);
+
+    } else {
+
+      current = "home";
+      renderWelcome();
+
+    }
+
   }
 
   document.addEventListener("click", event => {
@@ -974,51 +1272,11 @@
     const button = event.target.closest("[data-view]");
 
     if (button) {
+
       go(button.dataset.view);
+
     }
-  });
 
-  $("sidebarHomeBtn").onclick = () => {
-    go("home");
-  };
-
-  $("menuToggle").onclick = () => {
-
-    const open = $("sidebar").classList.toggle("open");
-
-    $("menuToggle").setAttribute(
-      "aria-expanded",
-      String(open)
-    );
-  };
-
-  document.addEventListener("click", event => {
-
-    if (
-      !$("sidebar").contains(event.target) &&
-      !$("menuToggle").contains(event.target)
-    ) {
-
-      $("sidebar").classList.remove("open");
-
-      $("menuToggle").setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
-  });
-
-  document.addEventListener("keydown", event => {
-
-    if (event.key === "Escape") {
-
-      $("sidebar").classList.remove("open");
-
-      $("menuToggle").setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
   });
 
   render();
