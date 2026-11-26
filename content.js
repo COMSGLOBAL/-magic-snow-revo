@@ -5,7 +5,7 @@ const APP_CONTENT = {
     title: "¡BIENVENIDO AL MANUAL!",
     subtitle: "Todo lo que necesitas saber para gestionar REVO durante Magic Snow.",
     description: "Hemos preparado este espacio de formación para acompañarte durante la campaña Magic Snow. Aprende a utilizar el datáfono y gestionar correctamente la operativa de caja a través de vídeos tutoriales, instrucciones paso a paso y ejercicios prácticos.",
-    image: "assets/datafono.png"
+    image: "datafono.png"
   },
 
   support: {
