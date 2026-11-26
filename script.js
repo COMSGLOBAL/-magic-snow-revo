@@ -1,529 +1,1026 @@
-const STORAGE_KEYS = {
-  currentView: "magicSnowCurrentView",
-  completed: "magicSnowCompletedModules",
-  notes: "magicSnowModuleNotes",
-  checklists: "magicSnowChecklistState",
-  faqAnswers: "magicSnowFaqAnswers",
-  support: "magicSnowSupportInfo"
-};
 
-const state = {
-  currentView: localStorage.getItem(STORAGE_KEYS.currentView) || "home",
-  completed: JSON.parse(localStorage.getItem(STORAGE_KEYS.completed) || "[]"),
-  notes: JSON.parse(localStorage.getItem(STORAGE_KEYS.notes) || "{}"),
-  checklists: JSON.parse(localStorage.getItem(STORAGE_KEYS.checklists) || "{}"),
-  faqAnswers: JSON.parse(localStorage.getItem(STORAGE_KEYS.faqAnswers) || "{}"),
-  support: JSON.parse(localStorage.getItem(STORAGE_KEYS.support) || JSON.stringify({
-    email: "",
-    channel: "",
-    buttonLabel: "Contactar soporte",
-    buttonLink: ""
-  }))
-};
+(() => {
 
-const sidebarNav = document.getElementById("sidebarNav");
-const contentArea = document.getElementById("contentArea");
-const progressBarFill = document.getElementById("progressBarFill");
-const progressPercent = document.getElementById("progressPercent");
-const completedCount = document.getElementById("completedCount");
-const sidebarHomeBtn = document.getElementById("sidebarHomeBtn");
-const menuToggle = document.getElementById("menuToggle");
-const sidebar = document.getElementById("sidebar");
+  const $ = id => document.getElementById(id);
+  const modules = APP_CONTENT.modules;
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEYS.currentView, state.currentView);
-  localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify(state.completed));
-  localStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(state.notes));
-  localStorage.setItem(STORAGE_KEYS.checklists, JSON.stringify(state.checklists));
-  localStorage.setItem(STORAGE_KEYS.faqAnswers, JSON.stringify(state.faqAnswers));
-  localStorage.setItem(STORAGE_KEYS.support, JSON.stringify(state.support));
-}
-
-function getProgress() {
-  return Math.round((state.completed.length / APP_CONTENT.modules.length) * 100);
-}
-
-function isCompleted(moduleId) {
-  return state.completed.includes(moduleId);
-}
-
-function toggleCompleted(moduleId) {
-  if (isCompleted(moduleId)) {
-    state.completed = state.completed.filter(id => id !== moduleId);
-  } else {
-    state.completed.push(moduleId);
+  function read(key, fallback) {
+    try {
+      return JSON.parse(localStorage.getItem(key)) ?? fallback;
+    } catch {
+      return fallback;
+    }
   }
 
-  saveState();
-  renderSidebar();
-  renderCurrentView();
-}
+  let completed = read("magicSnowCompletedModules", []);
 
-function goToHome() {
-  state.currentView = "home";
-  saveState();
-  renderSidebar();
-  renderCurrentView();
-  closeSidebarOnMobile();
-}
+  if (!Array.isArray(completed)) completed = [];
 
-function goToModule(moduleId) {
-  state.currentView = String(moduleId);
-  saveState();
-  renderSidebar();
-  renderCurrentView();
-  closeSidebarOnMobile();
-}
+  completed = [...new Set(
+    completed.filter(id => modules.some(m => m.id === id))
+  )];
 
-function renderSidebar() {
-  const progress = getProgress();
-  progressBarFill.style.width = `${progress}%`;
-  progressPercent.textContent = `${progress}%`;
-  completedCount.textContent = state.completed.length;
+  let checks = read("magicSnowChecklistState", {}) || {};
+  let current = "home";
 
-  const moduleItems = APP_CONTENT.modules.map(module => {
-    const active = state.currentView === String(module.id);
-    const completed = isCompleted(module.id);
+  try {
+    current = localStorage.getItem("magicSnowCurrentView") || "home";
+  } catch {}
 
+  function save() {
+    try {
+      localStorage.setItem(
+        "magicSnowCurrentView",
+        current
+      );
+
+      localStorage.setItem(
+        "magicSnowCompletedModules",
+        JSON.stringify(completed)
+      );
+
+      localStorage.setItem(
+        "magicSnowChecklistState",
+        JSON.stringify(checks)
+      );
+    } catch {}
+  }
+
+  const esc = s => String(s ?? "").replace(
+    /[&<>"']/g,
+    c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[c])
+  );
+
+  const num = n => String(n).padStart(2, "0");
+
+  function btn(label, view, cls = "secondary-btn") {
     return `
       <button
         type="button"
-        class="nav-item ${active ? "active" : ""} ${completed ? "completed" : ""}"
-        data-module-id="${module.id}"
+        class="${cls}"
+        data-view="${view}"
       >
-        <div class="nav-index">${completed ? "✓" : module.number}</div>
-        <div class="nav-label">
-          <span class="nav-title">${module.title}</span>
-          <span class="nav-status">${completed ? "Completado" : "Pendiente"}</span>
-        </div>
+        ${label}
       </button>
     `;
-  }).join("");
-
-  sidebarNav.innerHTML = moduleItems;
-
-  document.querySelectorAll(".nav-item").forEach(button => {
-    button.addEventListener("click", () => {
-      goToModule(button.dataset.moduleId);
-    });
-  });
-}
-
-function renderCurrentView() {
-  const allDone = state.completed.length === APP_CONTENT.modules.length;
-
-  if (state.currentView === "home") {
-    renderWelcome(allDone);
-    return;
   }
 
-  const module = APP_CONTENT.modules.find(item => String(item.id) === state.currentView);
-  if (!module) {
-    goToHome();
-    return;
+  function sidebar() {
+
+    const progress = Math.round(
+      completed.length / modules.length * 100
+    );
+
+    $("progressPercent").textContent = progress + "%";
+    $("progressBarFill").style.width = progress + "%";
+    $("completedCount").textContent = completed.length;
+
+    $("sidebarNav").innerHTML = modules.map(m => `
+      <button
+        type="button"
+        class="nav-item
+          ${current === String(m.id) ? "active" : ""}
+          ${completed.includes(m.id) ? "completed" : ""}"
+        data-view="${m.id}"
+      >
+
+        <div class="nav-index">
+          ${completed.includes(m.id) ? "✓" : num(m.id)}
+        </div>
+
+        <div class="nav-label">
+
+          <span class="nav-title">
+            ${esc(m.title)}
+          </span>
+
+          <span class="nav-status">
+            ${completed.includes(m.id)
+              ? "Completado"
+              : "Pendiente"}
+          </span>
+
+        </div>
+
+      </button>
+    `).join("");
   }
 
-  if (module.id === 6) {
-    renderSupportModule(module, allDone);
-    return;
+  function go(view) {
+
+    current = String(view);
+
+    save();
+    render();
+
+    $("sidebar").classList.remove("open");
+
+    $("menuToggle").setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+    window.scrollTo(0, 0);
   }
 
-  renderModule(module, allDone);
-}
+  function simulator(id) {
 
-function renderWelcome(allDone) {
-  const welcome = APP_CONTENT.welcome;
+    if (id !== 3 && id !== 5) return "";
 
-  contentArea.innerHTML = `
-    <section class="welcome-card">
-      <div class="welcome-hero">
-        <div class="welcome-content">
-          <p class="card-kicker">Plataforma de formación interna</p>
-          <h3>${welcome.title}</h3>
-          <p><strong>${welcome.subtitle}</strong></p>
-          ${welcome.description.map(text => `<p>${text}</p>`).join("")}
+    const payment = id === 3;
 
-          <div class="welcome-actions">
-            <button class="primary-btn" id="startTrainingBtn" type="button">COMENZAR FORMACIÓN</button>
-            <button class="secondary-btn" id="goSupportBtn" type="button">IR A DUDAS Y SOPORTE</button>
+    return `
+      <section class="panel simulator-panel">
+
+        <div class="sim-header">
+          <span>MAGIC SNOW · FORMACIÓN REVO</span>
+          <h4>
+            ${payment
+              ? "SIMULADOR DE COBRO"
+              : "SIMULADOR DE CIERRE DE CAJA"}
+          </h4>
+        </div>
+
+        <p>
+          Practica con este ejercicio interactivo.
+          No realiza operaciones reales.
+        </p>
+
+        ${!payment ? `
+          <div class="fund-card">
+            <span>FONDO INICIAL DE CAJA</span>
+            <strong>150,00 €</strong>
           </div>
-        </div>
+        ` : ""}
 
-        <div class="welcome-visual">
-          <div class="device-card">
-            <span class="snow-deco snow-1">✦</span>
-            <span class="snow-deco snow-2">❄</span>
-            <span class="snow-deco snow-3">✦</span>
-            <div class="device-illustration">💳</div>
-          </div>
+        <div class="sim-fields">
 
-          <div class="info-card">
-            <h4>Resumen de la formación</h4>
-            <div class="info-list">
-              ${welcome.stats.map(item => `<div class="info-pill">${item}</div>`).join("")}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          <label>
+            ${payment
+              ? "Importe de venta (€)"
+              : "Ventas en efectivo (€)"}
 
-    ${allDone ? `
-      <section class="final-card" style="margin-top:20px;">
-        <p class="card-kicker">Formación finalizada</p>
-        <h3>¡FORMACIÓN COMPLETADA!</h3>
-        <p>Ya conoces los principales procedimientos de REVO para la campaña Magic Snow.</p>
-        <p><strong>¡Gracias por formar parte del equipo!</strong></p>
-      </section>
-    ` : ""}
-  `;
-
-  document.getElementById("startTrainingBtn").addEventListener("click", () => goToModule(1));
-  document.getElementById("goSupportBtn").addEventListener("click", () => goToModule(6));
-}
-
-function renderModule(module, allDone) {
-  const noteValue = state.notes[module.id] || "";
-  const checklistBlock = module.checklistTitle ? renderChecklist(module) : "";
-  const prevId = module.id > 1 ? module.id - 1 : null;
-  const nextId = module.id < 6 ? module.id + 1 : null;
-  const completed = isCompleted(module.id);
-
-  contentArea.innerHTML = `
-    <section class="module-layout">
-      <div class="module-header">
-        <div class="module-title-wrap">
-          <p class="module-number">MÓDULO ${module.number}</p>
-          <h3>${module.title}</h3>
-          <p class="module-description">${module.description}</p>
-        </div>
-
-        <div class="tag-row">
-          <span class="tag">${completed ? "✓ Completado" : "Pendiente"}</span>
-          ${module.videoId ? `<span class="tag">Vídeo tutorial integrado</span>` : ""}
-        </div>
-      </div>
-
-      ${module.videoId ? `
-        <section class="panel">
-          <h4>Vídeo tutorial</h4>
-          <div class="video-frame-wrap">
-            <iframe
-              src="https://www.youtube.com/embed/${module.videoId}"
-              title="${module.title}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </section>
-      ` : ""}
-
-      <section class="panel">
-        <h4>${module.editableTitle}</h4>
-        <textarea
-          class="editable-textarea"
-          id="moduleNote"
-          placeholder="${module.editablePlaceholder}"
-        >${escapeHtml(noteValue)}</textarea>
-      </section>
-
-      <section class="panel important-box">
-        <h4>${module.importantTitle}</h4>
-        <p>${module.importantText}</p>
-      </section>
-
-      ${checklistBlock}
-
-      <section class="panel">
-        <div class="actions-row">
-          <button type="button" class="complete-btn ${completed ? "completed" : ""}" id="completeModuleBtn">
-            ${completed ? "Módulo completado ✓" : "Marcar como completado"}
-          </button>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="nav-buttons">
-          <button type="button" class="secondary-btn" id="backHomeBtn">Volver al inicio</button>
-          ${prevId ? `<button type="button" class="secondary-btn" id="prevModuleBtn">Módulo anterior</button>` : ""}
-          ${nextId ? `<button type="button" class="primary-btn" id="nextModuleBtn">Siguiente módulo</button>` : ""}
-        </div>
-      </section>
-
-      ${allDone ? `
-        <section class="final-card">
-          <p class="card-kicker">Formación finalizada</p>
-          <h3>¡FORMACIÓN COMPLETADA!</h3>
-          <p>Ya conoces los principales procedimientos de REVO para la campaña Magic Snow.</p>
-          <p><strong>¡Gracias por formar parte del equipo!</strong></p>
-        </section>
-      ` : ""}
-    </section>
-  `;
-
-  document.getElementById("moduleNote").addEventListener("input", (event) => {
-    state.notes[module.id] = event.target.value;
-    saveState();
-  });
-
-  const completeBtn = document.getElementById("completeModuleBtn");
-  completeBtn.addEventListener("click", () => toggleCompleted(module.id));
-
-  document.getElementById("backHomeBtn").addEventListener("click", goToHome);
-
-  if (prevId) {
-    document.getElementById("prevModuleBtn").addEventListener("click", () => goToModule(prevId));
-  }
-
-  if (nextId) {
-    document.getElementById("nextModuleBtn").addEventListener("click", () => goToModule(nextId));
-  }
-
-  attachChecklistEvents(module);
-}
-
-function renderChecklist(module) {
-  const stateForModule = state.checklists[module.id] || {};
-
-  return `
-    <section class="panel">
-      <h4>${module.checklistTitle}</h4>
-      <div class="checklist">
-        ${module.checklistItems.map((item, index) => `
-          <label class="checklist-item">
             <input
-              type="checkbox"
-              data-check-module="${module.id}"
-              data-check-index="${index}"
-              ${stateForModule[index] ? "checked" : ""}
-            />
-            <span>${item}</span>
+              id="simA"
+              class="support-input"
+              type="number"
+              min="0"
+              step="0.01"
+              value="${payment ? "19.99" : "150"}"
+            >
           </label>
-        `).join("")}
-      </div>
-    </section>
-  `;
-}
 
-function attachChecklistEvents(module) {
-  document.querySelectorAll(`[data-check-module="${module.id}"]`).forEach(input => {
-    input.addEventListener("change", (event) => {
-      const index = event.target.dataset.checkIndex;
+          <label>
+            ${payment
+              ? "Efectivo recibido (€)"
+              : "Efectivo contado (€)"}
 
-      if (!state.checklists[module.id]) {
-        state.checklists[module.id] = {};
+            <input
+              id="simB"
+              class="support-input"
+              type="number"
+              min="0"
+              step="0.01"
+              value="${payment ? "30" : "300"}"
+            >
+          </label>
+
+        </div>
+
+        ${payment ? `
+          <div class="cash-options">
+            ${[20, 30, 50, 100].map(n => `
+              <button
+                type="button"
+                class="secondary-btn"
+                data-cash="${n}"
+              >
+                ${n} €
+              </button>
+            `).join("")}
+          </div>
+        ` : ""}
+
+        <div
+          class="sim-result"
+          id="simResult"
+          aria-live="polite"
+        ></div>
+
+        <button
+          type="button"
+          class="secondary-btn"
+          id="simReset"
+        >
+          Reiniciar simulación
+        </button>
+
+        <p class="sim-disclaimer">
+          ${payment
+            ? "Ejercicio formativo. El importe de ejemplo no establece el PVP oficial."
+            : "Ejercicio simplificado sin devoluciones ni entradas o salidas adicionales de efectivo."}
+        </p>
+
+      </section>
+    `;
+  }
+
+  function setupSim(id) {
+
+    if (!$("simA")) return;
+
+    const format = n => n.toLocaleString(
+      "es-ES",
+      {
+        style: "currency",
+        currency: "EUR"
+      }
+    );
+
+    function update() {
+
+      const a = $("simA").valueAsNumber;
+      const b = $("simB").valueAsNumber;
+
+      if (
+        !Number.isFinite(a) ||
+        !Number.isFinite(b) ||
+        a < 0 ||
+        b < 0
+      ) {
+
+        $("simResult").textContent =
+          "Introduce importes válidos.";
+
+        return;
       }
 
-      state.checklists[module.id][index] = event.target.checked;
-      saveState();
-    });
-  });
-}
+      const expected = Math.round(
+        (a + (id === 5 ? 150 : 0)) * 100
+      ) / 100;
 
-function renderSupportModule(module, allDone) {
-  const prevId = 5;
-  const completed = isCompleted(module.id);
+      const diff = Math.round(
+        (b - expected) * 100
+      ) / 100;
 
-  contentArea.innerHTML = `
-    <section class="module-layout">
-      <div class="module-header">
-        <div class="module-title-wrap">
-          <p class="module-number">MÓDULO ${module.number}</p>
-          <h3>${module.title}</h3>
-          <p class="module-description">${module.description}</p>
+      if (id === 3) {
+
+        $("simResult").innerHTML = `
+          <span>
+            ${diff >= 0
+              ? "CAMBIO A DEVOLVER"
+              : "IMPORTE PENDIENTE"}
+          </span>
+
+          <strong>
+            ${format(Math.abs(diff))}
+          </strong>
+        `;
+
+      } else {
+
+        $("simResult").innerHTML = `
+          <span>EFECTIVO ESPERADO</span>
+
+          <strong>${format(expected)}</strong>
+
+          <p>
+            ${diff === 0
+              ? "✓ CAJA CUADRADA"
+              : diff > 0
+                ? "SOBRANTE: " + format(diff)
+                : "FALTANTE: " + format(-diff)}
+          </p>
+        `;
+      }
+    }
+
+    $("simA").oninput = update;
+    $("simB").oninput = update;
+
+    $("simReset").onclick = () => {
+
+      $("simA").value = id === 3 ? "19.99" : "150";
+      $("simB").value = id === 3 ? "30" : "300";
+
+      update();
+    };
+
+    document.querySelectorAll("[data-cash]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          $("simB").value = button.dataset.cash;
+          update();
+        };
+      });
+
+    update();
+  }
+
+  function finalScreen() {
+
+    return `
+      <section class="final-card">
+
+        <div class="finish-icon">✓</div>
+
+        <p class="card-kicker">
+          MAGIC SNOW · CENTRO DE FORMACIÓN
+        </p>
+
+        <h3>¡FORMACIÓN COMPLETADA!</h3>
+
+        <p>
+          Ya conoces los principales procedimientos
+          de REVO para la campaña Magic Snow.
+        </p>
+
+        <p>
+          <strong>
+            ¡Gracias por formar parte del equipo!
+          </strong>
+        </p>
+
+        <div class="final-progress">
+          6 / 6 MÓDULOS COMPLETADOS
         </div>
 
-        <div class="tag-row">
-          <span class="tag">${completed ? "✓ Completado" : "Pendiente"}</span>
-          <span class="tag">Centro de ayuda</span>
-        </div>
-      </div>
+        ${btn("Volver al inicio", "home", "primary-btn")}
 
-      <section class="panel">
-        <h4>PREGUNTAS FRECUENTES</h4>
-        <div class="faq-list">
-          ${module.faq.map((question, index) => `
-            <div class="faq-item">
-              <button type="button" class="faq-question" data-faq-button="${index}">
-                <span>${question}</span>
-                <span>+</span>
-              </button>
-              <div class="faq-answer" id="faq-answer-${index}">
-                <textarea
-                  class="editable-textarea"
-                  data-faq-answer="${index}"
-                  placeholder="Escribe aquí la respuesta o indicación correspondiente."
-                >${escapeHtml(state.faqAnswers[index] || "")}</textarea>
-              </div>
+      </section>
+    `;
+  }
+
+  function renderWelcome() {
+
+    const nextModule =
+      modules.find(m => !completed.includes(m.id))?.id || 1;
+
+    $("contentArea").innerHTML = `
+
+      <section class="welcome-card">
+
+        <div class="welcome-hero">
+
+          <div class="welcome-content">
+
+            <p class="card-kicker">
+              LA CASA DE LAS CARCASAS · CENTRO DE FORMACIÓN
+            </p>
+
+            <h3>¡BIENVENIDO A MAGIC SNOW!</h3>
+
+            <p>
+              <strong>
+                Aprende a utilizar REVO paso a paso.
+              </strong>
+            </p>
+
+            <p>
+              Hemos preparado esta guía para ayudarte
+              a gestionar correctamente la operativa
+              de caja y el datáfono durante la campaña
+              Magic Snow.
+            </p>
+
+            <p>
+              A través de nuestros vídeos tutoriales
+              aprenderás a iniciar el sistema, abrir
+              la caja, realizar cobros, gestionar
+              devoluciones y completar el cierre de turno.
+            </p>
+
+            <div class="welcome-actions">
+
+              ${btn(
+                completed.length
+                  ? "CONTINUAR FORMACIÓN"
+                  : "COMENZAR FORMACIÓN",
+                nextModule,
+                "primary-btn"
+              )}
+
+              ${btn("DUDAS Y SOPORTE", 6)}
+
             </div>
-          `).join("")}
+
+          </div>
+
+          <div class="welcome-visual">
+
+            <div class="device-card">
+
+              <span class="snow-deco snow-1">❄</span>
+              <span class="snow-deco snow-2">✦</span>
+              <span class="snow-deco snow-3">❄</span>
+
+              <div class="device-illustration">
+
+                <img
+                  src="assets/datafono.png"
+                  alt="Datáfono Magic Snow"
+                  id="devicePhoto"
+                >
+
+                <span id="deviceFallback" hidden>
+                  💳
+                </span>
+
+              </div>
+
+            </div>
+
+            <div class="info-card">
+
+              <h4>Tu formación</h4>
+
+              <div class="training-stats">
+
+                <div class="stat-card">
+                  <strong>6</strong>
+                  <span>MÓDULOS</span>
+                </div>
+
+                <div class="stat-card">
+                  <strong>5</strong>
+                  <span>VÍDEOS</span>
+                </div>
+
+                <div class="stat-card">
+                  <strong>1</strong>
+                  <span>SOPORTE</span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
+
       </section>
 
-      <section class="support-grid">
-        <div class="support-card">
-          <div class="support-icon">?</div>
-          <h4>¿NECESITAS AYUDA?</h4>
-          <p>¿Tienes alguna incidencia o necesitas ayuda?</p>
+      <section class="module-overview">
 
-          <label>
-            <strong>Correo electrónico de soporte</strong>
-            <input
-              type="text"
-              class="support-input"
-              id="supportEmail"
-              placeholder="Añade aquí el correo de soporte"
-              value="${escapeAttribute(state.support.email || "")}"
-            />
-          </label>
+        <h3>Explora los módulos de formación</h3>
 
-          <br /><br />
+        <div class="overview-grid">
 
-          <label>
-            <strong>Contacto o canal interno de incidencias</strong>
-            <textarea
-              class="support-textarea"
-              id="supportChannel"
-              placeholder="Añade aquí el canal interno o la referencia de contacto"
-            >${escapeHtml(state.support.channel || "")}</textarea>
-          </label>
+          ${modules.map(m => `
+
+            <button
+              type="button"
+              class="overview-card"
+              data-view="${m.id}"
+            >
+
+              <span class="overview-number">
+                ${completed.includes(m.id)
+                  ? "✓"
+                  : num(m.id)}
+              </span>
+
+              <strong>${esc(m.title)}</strong>
+
+              <p>${esc(m.description)}</p>
+
+              <span class="overview-link">
+                ${completed.includes(m.id)
+                  ? "Volver a consultar"
+                  : "Acceder al módulo"} →
+              </span>
+
+            </button>
+
+          `).join("")}
+
         </div>
 
-        <div class="support-card">
-          <h4>Botón de contacto configurable</h4>
+      </section>
 
-          <label>
-            <strong>Texto del botón</strong>
-            <input
-              type="text"
-              class="support-input"
-              id="supportButtonLabel"
-              placeholder="Ej. Contactar soporte"
-              value="${escapeAttribute(state.support.buttonLabel || "")}"
-            />
-          </label>
+      ${completed.length === 6 ? finalScreen() : ""}
 
-          <br /><br />
+    `;
 
-          <label>
-            <strong>Enlace o correo del botón</strong>
-            <input
-              type="text"
-              class="support-input"
-              id="supportButtonLink"
-              placeholder="Ej. mailto:soporte@dominio.com"
-              value="${escapeAttribute(state.support.buttonLink || "")}"
-            />
-          </label>
+    const photo = $("devicePhoto");
 
-          <br /><br />
+    function fallback() {
+
+      photo.hidden = true;
+      $("deviceFallback").hidden = false;
+    }
+
+    photo.onerror = fallback;
+
+    if (photo.complete && !photo.naturalWidth) {
+      fallback();
+    }
+  }
+
+  function renderVideoModule(m) {
+
+    return `
+
+      <section class="panel video-panel">
+
+        <div class="video-heading">
+          <h4>VÍDEO TUTORIAL</h4>
+          <span class="tag">Módulo ${num(m.id)}</span>
+        </div>
+
+        <div class="video-frame-wrap">
+
+          <iframe
+            id="tutorial"
+            src="https://www.youtube.com/embed/${m.videoId}"
+            title="${esc(m.title)}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+
+        </div>
+
+        <p class="video-external">
+          <a
+            href="https://youtu.be/${m.videoId}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir vídeo en YouTube ↗
+          </a>
+        </p>
+
+      </section>
+
+      <section class="panel">
+
+        <h4>INSTRUCCIONES PASO A PASO</h4>
+
+        <div class="step-list">
+
+          ${m.steps.map((step, i) => `
+
+            <article class="step">
+
+              <span class="step-number">
+                ${num(i + 1)}
+              </span>
+
+              <div>
+
+                <h5>${esc(step[1])}</h5>
+
+                <p>${esc(step[2])}</p>
+
+                <button
+                  type="button"
+                  class="timestamp"
+                  data-time="${step[0]}"
+                >
+                  ▶ ${step[0]}
+                </button>
+
+              </div>
+
+            </article>
+
+          `).join("")}
+
+        </div>
+
+      </section>
+
+      ${m.id === 2 ? `
+
+        <section class="fund-highlight">
+          <span>FONDO INICIAL DE CAJA</span>
+          <strong>150,00 €</strong>
+          <p>Antes de comenzar las ventas.</p>
+        </section>
+
+      ` : ""}
+
+      ${m.id === 3 || m.id === 4 ? `
+
+        <div class="payment-grid">
+
+          <section class="payment-card cash-card">
+
+            <span class="payment-icon">€</span>
+
+            <h4>EFECTIVO</h4>
+
+            <p>
+              ${m.id === 3
+                ? "Introduce el efectivo recibido y comprueba el cambio antes de finalizar el cobro."
+                : "Si la compra se realizó en efectivo, la devolución se realizará en efectivo."}
+            </p>
+
+          </section>
+
+          <section class="payment-card card-card">
+
+            <span class="payment-icon">▤</span>
+
+            <h4>TARJETA</h4>
+
+            <p>
+              ${m.id === 3
+                ? "Selecciona el pago con tarjeta y utiliza el lector del datáfono."
+                : "Si la compra se realizó con tarjeta, REVO gestiona la devolución con tarjeta."}
+            </p>
+
+          </section>
+
+        </div>
+
+      ` : ""}
+
+      <section class="panel important-box">
+
+        <h4>⚠ INFORMACIÓN IMPORTANTE</h4>
+
+        <ul>
+          ${m.important.map(text => `
+            <li>${esc(text)}</li>
+          `).join("")}
+        </ul>
+
+      </section>
+
+      ${simulator(m.id)}
+
+      <section class="panel">
+
+        <div class="checklist-heading">
+
+          <h4>CHECKLIST DE COMPROBACIÓN</h4>
+
+          <span id="checkCount"></span>
+
+        </div>
+
+        <div class="check-progress">
+          <div id="checkProgressFill"></div>
+        </div>
+
+        <div class="checklist">
+
+          ${m.checklist.map((text, i) => `
+
+            <label class="checklist-item">
+
+              <input
+                type="checkbox"
+                data-check="${i}"
+                ${checks[m.id]?.[i] ? "checked" : ""}
+              >
+
+              <span>${esc(text)}</span>
+
+            </label>
+
+          `).join("")}
+
+        </div>
+
+      </section>
+
+    `;
+  }
+
+  function renderSupport(m) {
+
+    const support = APP_CONTENT.support;
+
+    const link =
+      /^(https:\/\/|mailto:)/i.test(support.buttonLink)
+        ? support.buttonLink
+        : "";
+
+    return `
+
+      <section class="panel">
+
+        <h4>PREGUNTAS FRECUENTES</h4>
+
+        <div class="faq-list">
+
+          ${m.faq.map(faq => `
+
+            <details class="faq-item">
+
+              <summary class="faq-question">
+                ${esc(faq[0])}
+              </summary>
+
+              <p class="faq-text">
+                ${esc(faq[1])}
+              </p>
+
+            </details>
+
+          `).join("")}
+
+        </div>
+
+      </section>
+
+      <section class="support-card">
+
+        <div class="support-icon">?</div>
+
+        <h4>¿NECESITAS AYUDA?</h4>
+
+        <p>
+          ¿Tienes alguna incidencia o necesitas ayuda?
+          Contacta con el equipo de soporte interno
+          de La Casa de las Carcasas.
+        </p>
+
+        ${support.email ? `
+          <p>
+            <strong>Correo:</strong>
+            ${esc(support.email)}
+          </p>
+        ` : ""}
+
+        ${support.channel ? `
+          <p>
+            <strong>Canal de soporte:</strong>
+            ${esc(support.channel)}
+          </p>
+        ` : ""}
+
+        ${link ? `
 
           <a
-            href="${state.support.buttonLink ? escapeAttribute(state.support.buttonLink) : "#"}"
             class="contact-btn"
-            id="dynamicContactBtn"
-            ${state.support.buttonLink ? "" : 'onclick="return false;"'}
-            style="display:inline-block; text-decoration:none;"
+            href="${esc(link)}"
           >
-            ${state.support.buttonLabel || "Contactar soporte"}
+            Contactar soporte
           </a>
-        </div>
+
+        ` : `
+
+          <p class="support-pending">
+            Canal y datos de contacto pendientes
+            de confirmar.
+          </p>
+
+        `}
+
       </section>
 
-      <section class="panel">
-        <div class="actions-row">
-          <button type="button" class="complete-btn ${completed ? "completed" : ""}" id="completeSupportBtn">
-            ${completed ? "Módulo completado ✓" : "Marcar como completado"}
-          </button>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="nav-buttons">
-          <button type="button" class="secondary-btn" id="backHomeBtn">Volver al inicio</button>
-          <button type="button" class="secondary-btn" id="prevModuleBtn">Módulo anterior</button>
-        </div>
-      </section>
-
-      ${allDone ? `
-        <section class="final-card">
-          <p class="card-kicker">Formación finalizada</p>
-          <h3>¡FORMACIÓN COMPLETADA!</h3>
-          <p>Ya conoces los principales procedimientos de REVO para la campaña Magic Snow.</p>
-          <p><strong>¡Gracias por formar parte del equipo!</strong></p>
-        </section>
-      ` : ""}
-    </section>
-  `;
-
-  document.getElementById("backHomeBtn").addEventListener("click", goToHome);
-  document.getElementById("prevModuleBtn").addEventListener("click", () => goToModule(prevId));
-  document.getElementById("completeSupportBtn").addEventListener("click", () => toggleCompleted(module.id));
-
-  document.querySelectorAll("[data-faq-button]").forEach(button => {
-    button.addEventListener("click", () => {
-      const index = button.dataset.faqButton;
-      const answer = document.getElementById(`faq-answer-${index}`);
-      answer.classList.toggle("open");
-    });
-  });
-
-  document.querySelectorAll("[data-faq-answer]").forEach(area => {
-    area.addEventListener("input", (event) => {
-      const index = event.target.dataset.faqAnswer;
-      state.faqAnswers[index] = event.target.value;
-      saveState();
-    });
-  });
-
-  document.getElementById("supportEmail").addEventListener("input", (event) => {
-    state.support.email = event.target.value;
-    saveState();
-  });
-
-  document.getElementById("supportChannel").addEventListener("input", (event) => {
-    state.support.channel = event.target.value;
-    saveState();
-  });
-
-  document.getElementById("supportButtonLabel").addEventListener("input", (event) => {
-    state.support.buttonLabel = event.target.value;
-    saveState();
-    renderCurrentView();
-  });
-
-  document.getElementById("supportButtonLink").addEventListener("input", (event) => {
-    state.support.buttonLink = event.target.value;
-    saveState();
-    renderCurrentView();
-  });
-}
-
-function closeSidebarOnMobile() {
-  if (window.innerWidth <= 1100) {
-    sidebar.classList.remove("open");
+    `;
   }
-}
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
+  function render() {
 
-function escapeAttribute(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
+    sidebar();
 
-sidebarHomeBtn.addEventListener("click", goToHome);
+    const area = $("contentArea");
 
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
+    if (current === "done" && completed.length === 6) {
+      area.innerHTML = finalScreen();
+      return;
+    }
 
-renderSidebar();
-renderCurrentView();
+    const m = modules.find(
+      module => String(module.id) === current
+    );
+
+    if (!m) {
+      renderWelcome();
+      return;
+    }
+
+    const body = m.videoId
+      ? renderVideoModule(m)
+      : renderSupport(m);
+
+    area.innerHTML = `
+
+      <section class="module-layout">
+
+        <div class="module-header">
+
+          <div class="module-title-wrap">
+
+            <p class="module-number">
+              MÓDULO ${num(m.id)} DE 06
+            </p>
+
+            <h3>${esc(m.title)}</h3>
+
+            <p class="module-description">
+              ${esc(m.description)}
+            </p>
+
+          </div>
+
+          <span class="tag">
+            ${completed.includes(m.id)
+              ? "✓ Completado"
+              : "Pendiente"}
+          </span>
+
+        </div>
+
+        ${body}
+
+        <section class="panel complete-panel">
+
+          <div>
+
+            <h4>¿HAS TERMINADO ESTE MÓDULO?</h4>
+
+            <p>
+              Marca este apartado como completado
+              para guardar tu progreso.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="complete-btn"
+            id="completeModuleBtn"
+          >
+            ${completed.includes(m.id)
+              ? "✓ Completado · Desmarcar"
+              : "Marcar como completado"}
+          </button>
+
+        </section>
+
+        <div class="nav-buttons">
+
+          ${btn("Volver al inicio", "home")}
+
+          ${m.id > 1
+            ? btn("← Anterior", m.id - 1)
+            : ""}
+
+          ${m.id < 6
+            ? btn("Siguiente →", m.id + 1, "primary-btn")
+            : ""}
+
+          ${completed.length === 6
+            ? btn("Ver finalización", "done", "primary-btn")
+            : ""}
+
+        </div>
+
+      </section>
+
+    `;
+
+    $("completeModuleBtn").onclick = () => {
+
+      completed = completed.includes(m.id)
+        ? completed.filter(id => id !== m.id)
+        : [...completed, m.id];
+
+      save();
+
+      if (completed.length === 6) {
+
+        go("done");
+
+      } else {
+
+        sidebar();
+
+        $("completeModuleBtn").textContent =
+          completed.includes(m.id)
+            ? "✓ Completado · Desmarcar"
+            : "Marcar como completado";
+
+        area.querySelector(".module-header .tag")
+          .textContent = completed.includes(m.id)
+            ? "✓ Completado"
+            : "Pendiente";
+      }
+    };
+
+    function updateCount() {
+
+      if (!$("checkCount") || !m.checklist) return;
+
+      const total = m.checklist.length;
+
+      const count = m.checklist.filter(
+        (_, i) => checks[m.id]?.[i]
+      ).length;
+
+      $("checkCount").textContent =
+        `${count} / ${total}`;
+
+      $("checkProgressFill").style.width =
+        `${total ? count / total * 100 : 0}%`;
+    }
+
+    area.querySelectorAll("[data-check]")
+      .forEach(input => {
+
+        input.onchange = () => {
+
+          checks[m.id] ??= {};
+
+          checks[m.id][input.dataset.check] =
+            input.checked;
+
+          save();
+          updateCount();
+        };
+      });
+
+    updateCount();
+    setupSim(m.id);
+
+    area.querySelectorAll("[data-time]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          const [min, sec] =
+            button.dataset.time.split(":").map(Number);
+
+          const seconds = min * 60 + sec;
+
+          $("tutorial").src =
+            `https://www.youtube.com/embed/${m.videoId}?start=${seconds}&autoplay=1`;
+
+          $("tutorial").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+        };
+      });
+  }
+
+  document.addEventListener("click", event => {
+
+    const button = event.target.closest("[data-view]");
+
+    if (button) {
+      go(button.dataset.view);
+    }
+  });
+
+  $("sidebarHomeBtn").onclick = () => {
+    go("home");
+  };
+
+  $("menuToggle").onclick = () => {
+
+    const open = $("sidebar").classList.toggle("open");
+
+    $("menuToggle").setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+  };
+
+  document.addEventListener("click", event => {
+
+    if (
+      !$("sidebar").contains(event.target) &&
+      !$("menuToggle").contains(event.target)
+    ) {
+
+      $("sidebar").classList.remove("open");
+
+      $("menuToggle").setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+      $("sidebar").classList.remove("open");
+
+      $("menuToggle").setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  });
+
+  render();
+
+})();
