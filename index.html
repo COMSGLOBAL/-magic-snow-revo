@@ -1,81 +1,116 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MAGIC SNOW · Manual REVO</title>
-  <meta name="description" content="Centro de formación REVO · Magic Snow · La Casa de las Carcasas" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00754A">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;700&display=swap"
-    rel="stylesheet"
-  />
+  <title>MAGIC SNOW | Manual REVO</title>
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
+
 <body>
-  <div class="app-shell">
+
+  <div class="app">
+
+    <div id="overlay" class="overlay"></div>
+
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-top">
-        <div class="brand-mini">❄</div>
-        <div class="brand-block">
-          <p class="brand-overline">LA CASA DE LAS CARCASAS</p>
-          <h1>MAGIC SNOW</h1>
-          <p class="brand-subtitle">CENTRO DE FORMACIÓN REVO</p>
-        </div>
+
+      <div class="brand">
+
+        <div class="brand-icon">❄</div>
+
+        <span class="eyebrow">
+          LA CASA DE LAS CARCASAS
+        </span>
+
+        <h1>MAGIC SNOW</h1>
+
+        <p>CENTRO DE FORMACIÓN REVO</p>
+
       </div>
 
-      <div class="sidebar-progress-card">
-        <div class="progress-label-row">
-          <span>Progreso de formación</span>
+      <button class="home-button" data-view="home">
+        ⌂ &nbsp; Inicio del manual
+      </button>
+
+      <div class="progress-card">
+
+        <div class="progress-header">
+          <span>Tu formación</span>
           <strong id="progressPercent">0%</strong>
         </div>
-        <div class="progress-bar">
-          <div class="progress-bar-fill" id="progressBarFill"></div>
+
+        <div class="progress-track">
+          <div id="progressFill"></div>
         </div>
-        <div class="progress-status">
-          <span id="completedCount">0</span> / 6 módulos completados
-        </div>
+
+        <small id="progressCount">
+          0 de 6 módulos completados
+        </small>
+
       </div>
 
-      <nav class="sidebar-nav" id="sidebarNav">
-        <!-- generado por JS -->
-      </nav>
+      <div class="menu-label">
+        MÓDULOS DE FORMACIÓN
+      </div>
 
-      <button class="sidebar-home-btn" id="sidebarHomeBtn" type="button">
-        Volver al inicio
-      </button>
+      <nav id="navigation"></nav>
+
+      <div class="sidebar-footer">
+        ❄ MAGIC SNOW · NAVIDAD 2026
+        <br>
+        La Casa de las Carcasas
+      </div>
+
     </aside>
 
-    <div class="main-area">
+    <div class="main">
+
       <header class="topbar">
-        <div class="topbar-left">
-          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">
-            ☰
-          </button>
-          <div>
-            <p class="topbar-kicker">MAGIC SNOW</p>
-            <h2 class="topbar-title">MANUAL DE USO DEL DATÁFONO · REVO</h2>
-          </div>
+
+        <button
+          id="menuToggle"
+          class="menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+        <div>
+          <span class="eyebrow">MAGIC SNOW</span>
+          <h2>Manual de uso del datáfono · REVO</h2>
         </div>
 
-        <div class="topbar-right">
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            Formación interactiva
-          </div>
-        </div>
+        <span class="header-tag">
+          ❄ FORMACIÓN INTERNA
+        </span>
+
       </header>
 
-      <main class="content-area" id="contentArea">
-        <!-- generado por JS -->
-      </main>
+      <main id="content" tabindex="-1"></main>
+
+      <footer class="main-footer">
+        LA CASA DE LAS CARCASAS · MAGIC SNOW 2026
+        <br>
+        Centro de formación REVO
+      </footer>
+
     </div>
+
   </div>
 
-  <script src="content.js"></script>
-  <script src="script.js"></script>
+  <script src="content.js?v=3"></script>
+  <script src="script.js?v=3"></script>
+
 </body>
 </html>
