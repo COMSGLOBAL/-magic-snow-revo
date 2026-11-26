@@ -9,9 +9,9 @@ const APP_CONTENT = {
   },
 
   support: {
-    email: "",
+    email: "soporte@lacasadelascarcasas.es",
     channel: "",
-    link: ""
+    link: "mailto:soporte@lacasadelascarcasas.es"
   },
 
   modules: [
@@ -52,7 +52,7 @@ const APP_CONTENT = {
         {
           time: "01:10",
           title: "Introducir el PIN",
-          text: "Cuando el sistema solicite el PIN, introduce el que te hayan facilitado internamente."
+          text: "¡IMPORTANTE! Cuando REVO solicite el PIN, introduce siempre 0000."
         },
 
         {
@@ -70,6 +70,7 @@ const APP_CONTENT = {
       ],
 
       important: [
+        "¡IMPORTANTE! El PIN de REVO es siempre 0000.",
         "Todos los pagos se gestionarán a través de Handy REVO.",
         "El botón Cobros de BBVA únicamente se utilizará si no funciona REVO, según lo indicado en el tutorial.",
         "No utilizaremos las carpetas Otros ni Calculadora.",
@@ -82,6 +83,7 @@ const APP_CONTENT = {
         "He accedido a Apps y Handy REVO.",
         "He iniciado sesión correctamente.",
         "Los productos se han cargado.",
+        "Sé que el PIN de REVO es 0000.",
         "He seleccionado la vista de cuadrados.",
         "Identifico Venta rápida y el menú lateral."
       ]
@@ -342,7 +344,7 @@ const APP_CONTENT = {
         {
           time: "00:40",
           title: "Volver a acceder a REVO",
-          text: "Si sales accidentalmente de la aplicación, vuelve a acceder, introduce el PIN facilitado internamente y sincroniza."
+          text: "Si sales accidentalmente de la aplicación, vuelve a acceder a Handy REVO, introduce siempre el PIN 0000 y sincroniza la aplicación."
         },
 
         {
@@ -354,17 +356,18 @@ const APP_CONTENT = {
         {
           time: "01:06",
           title: "Soporte y cierre de sesión",
-          text: "Desde el menú lateral podrás cerrar sesión o acceder a ayuda. Ante cualquier incidencia, contacta directamente con el equipo de soporte interno de La Casa de las Carcasas."
+          text: "Desde el menú lateral podrás cerrar sesión o acceder a ayuda. Ante cualquier incidencia, contacta directamente con nuestro equipo de soporte interno a través de soporte@lacasadelascarcasas.es."
         }
 
       ],
 
       important: [
-        "Realiza el cierre de turno todos los días.",
+        "Realiza el cierre de turno todos los días al finalizar la jornada.",
         "Ten en cuenta el fondo inicial de 150 €.",
         "Imprime el Informe Z y comprueba los importes.",
+        "Recuerda que el PIN de REVO es siempre 0000.",
         "Sincroniza REVO cuando Central comunique una actualización.",
-        "Contacta con soporte interno ante cualquier incidencia."
+        "Ante cualquier incidencia, contacta con soporte@lacasadelascarcasas.es."
       ],
 
       checklist: [
@@ -372,7 +375,7 @@ const APP_CONTENT = {
         "He realizado el recuento de efectivo.",
         "He tenido en cuenta el fondo inicial.",
         "He completado el cierre de turno.",
-        "He obtenido el Informe Z.",
+        "He obtenido e impreso el Informe Z.",
         "He comprobado los importes.",
         "Sé cuándo debo sincronizar REVO.",
         "Sé a quién contactar en caso de incidencia."
@@ -398,6 +401,16 @@ const APP_CONTENT = {
         {
           question: "¿Qué aplicación debo utilizar?",
           answer: "Handy REVO. Encontrarás la aplicación dentro de la carpeta Apps del datáfono."
+        },
+
+        {
+          question: "¿Cuál es el PIN de REVO?",
+          answer: "¡IMPORTANTE! El PIN que debes introducir siempre es 0000."
+        },
+
+        {
+          question: "¿Qué hago si no puedo iniciar sesión?",
+          answer: "Comprueba que estás utilizando el usuario y la contraseña asignados a tu tienda. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
         },
 
         {
@@ -432,7 +445,7 @@ const APP_CONTENT = {
 
         {
           question: "¿Qué hago si se rechaza un pago?",
-          answer: "Consulta con el equipo de soporte interno. El procedimiento específico ante pagos rechazados está pendiente de confirmar."
+          answer: "Contacta con nuestro equipo de soporte interno a través de soporte@lacasadelascarcasas.es."
         },
 
         {
@@ -452,7 +465,7 @@ const APP_CONTENT = {
 
         {
           question: "¿Qué hago si salgo accidentalmente de REVO?",
-          answer: "Vuelve a acceder a la aplicación, introduce el PIN facilitado internamente y sincroniza."
+          answer: "Vuelve a acceder a Handy REVO, introduce el PIN 0000 y selecciona Sincronizar."
         },
 
         {
@@ -462,7 +475,7 @@ const APP_CONTENT = {
 
         {
           question: "¿Con quién contacto si tengo una incidencia?",
-          answer: "Contacta con el equipo de soporte interno de La Casa de las Carcasas."
+          answer: "Contacta directamente con nuestro equipo de soporte interno de La Casa de las Carcasas a través de soporte@lacasadelascarcasas.es."
         }
 
       ]
