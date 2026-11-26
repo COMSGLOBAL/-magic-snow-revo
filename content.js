@@ -27,7 +27,7 @@ const APP_CONTENT = {
       video: "1o4d4YRDWUY",
 
       description:
-        "Aprende a encender el datáfono, acceder a Handy REVO y conocer las principales funciones del sistema.",
+        "Aprende a encender el datáfono, acceder a Handy REVO, conocer las credenciales de acceso y descubrir las principales funciones del sistema.",
 
       steps: [
 
@@ -45,14 +45,26 @@ const APP_CONTENT = {
 
         {
           time: "00:36",
-          title: "Iniciar sesión",
-          text: "Introduce el usuario y la contraseña asignados a tu tienda. Espera a que se inicie la sesión y se carguen los productos."
+          title: "🔐 CREDENCIALES DE ACCESO",
+          text: "Usuario: el mismo que utilizáis en la Intranet. Contraseña: igual que el usuario. Ejemplo: Usuario: tienda001 / Contraseña: tienda001."
+        },
+
+        {
+          time: "00:36",
+          title: "Si recibís dos datáfonos",
+          text: "Si vuestra tienda recibe dos datáfonos para la campaña Magic Snow, debéis utilizar las mismas credenciales de acceso en ambos dispositivos."
+        },
+
+        {
+          time: "00:55",
+          title: "Cargar los productos",
+          text: "Una vez introducidos el usuario y la contraseña, esperad a que se inicie la sesión y se carguen todos los productos disponibles para la campaña."
         },
 
         {
           time: "01:10",
-          title: "Introducir el PIN",
-          text: "¡IMPORTANTE! Cuando REVO solicite el PIN, introduce siempre 0000."
+          title: "🔑 PIN DE ACCESO",
+          text: "¡IMPORTANTE! El PIN de acceso a REVO es siempre: 0000."
         },
 
         {
@@ -70,7 +82,10 @@ const APP_CONTENT = {
       ],
 
       important: [
-        "¡IMPORTANTE! El PIN de REVO es siempre 0000.",
+        "🔐 CREDENCIALES DE ACCESO: el usuario es el mismo que utilizáis en la Intranet y la contraseña es igual que el usuario.",
+        "Ejemplo: Usuario: tienda001 / Contraseña: tienda001.",
+        "Si recibís dos datáfonos, utilizad las mismas credenciales en ambos.",
+        "🔑 ¡IMPORTANTE! El PIN de acceso es siempre 0000.",
         "Todos los pagos se gestionarán a través de Handy REVO.",
         "El botón Cobros de BBVA únicamente se utilizará si no funciona REVO, según lo indicado en el tutorial.",
         "No utilizaremos las carpetas Otros ni Calculadora.",
@@ -81,9 +96,11 @@ const APP_CONTENT = {
       checklist: [
         "He encendido el datáfono.",
         "He accedido a Apps y Handy REVO.",
+        "Conozco las credenciales de acceso de mi tienda.",
         "He iniciado sesión correctamente.",
-        "Los productos se han cargado.",
-        "Sé que el PIN de REVO es 0000.",
+        "Sé que debo utilizar las mismas credenciales si recibimos dos datáfonos.",
+        "Los productos se han cargado correctamente.",
+        "Sé que el PIN de acceso es 0000.",
         "He seleccionado la vista de cuadrados.",
         "Identifico Venta rápida y el menú lateral."
       ]
@@ -404,13 +421,23 @@ const APP_CONTENT = {
         },
 
         {
+          question: "¿Cuáles son las credenciales de acceso a REVO?",
+          answer: "El usuario es el mismo que utilizáis en la Intranet y la contraseña es igual que el usuario. Ejemplo: Usuario: tienda001 / Contraseña: tienda001."
+        },
+
+        {
+          question: "¿Qué ocurre si recibimos dos datáfonos?",
+          answer: "Debéis utilizar las mismas credenciales de acceso de vuestra tienda en ambos datáfonos."
+        },
+
+        {
           question: "¿Cuál es el PIN de REVO?",
           answer: "¡IMPORTANTE! El PIN que debes introducir siempre es 0000."
         },
 
         {
           question: "¿Qué hago si no puedo iniciar sesión?",
-          answer: "Comprueba que estás utilizando el usuario y la contraseña asignados a tu tienda. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
+          answer: "Comprueba que estás utilizando el usuario y la contraseña correspondientes a tu tienda. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
         },
 
         {
