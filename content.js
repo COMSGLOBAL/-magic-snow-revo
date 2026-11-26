@@ -1,241 +1,366 @@
 
 const APP_CONTENT = {
+
+  welcome: {
+    title: "¡BIENVENIDO AL MANUAL!",
+    subtitle: "Todo lo que necesitas saber para gestionar REVO durante Magic Snow.",
+    description: "Hemos preparado este espacio de formación para acompañarte durante la campaña Magic Snow. Aprende a utilizar el datáfono y gestionar correctamente la operativa de caja a través de vídeos tutoriales, instrucciones paso a paso y ejercicios prácticos.",
+    image: "assets/datafono.png"
+  },
+
   support: {
     email: "",
     channel: "",
-    buttonLink: ""
+    link: ""
   },
 
   modules: [
+
+    // ==================================
+    // 01 - INICIO
+    // ==================================
+
     {
       id: 1,
       title: "INICIO",
-      videoId: "1o4d4YRDWUY",
-      description: "Aprende a encender el datáfono, acceder a Handy REVO y conocer sus funciones.",
+      icon: "⏻",
+      video: "1o4d4YRDWUY",
+
+      description:
+        "Aprende a encender el datáfono, acceder a Handy REVO y conocer las principales funciones del sistema.",
 
       steps: [
-        [
-          "00:00",
-          "Encender el datáfono",
-          "En la pantalla principal de BBVA encontrarás Cobros, Apps, Otros y Calculadora."
-        ],
-        [
-          "00:26",
-          "Acceder a Handy REVO",
-          "Entra en la carpeta Apps y selecciona Handy REVO."
-        ],
-        [
-          "00:36",
-          "Iniciar sesión",
-          "Introduce las credenciales asignadas a tu tienda, espera a que se carguen los productos e introduce el PIN asignado cuando se solicite."
-        ],
-        [
-          "01:10",
-          "Conocer la pantalla principal",
-          "Identifica Venta rápida, el botón R del menú lateral, Soporte y el botón inferior de refresco. Utiliza siempre la vista de cuadrados."
-        ]
+
+        {
+          time: "00:00",
+          title: "Encender el datáfono",
+          text: "Al encender el dispositivo aparecerá la pantalla principal de BBVA. Encontrarás las opciones Cobros, Apps, Otros y Calculadora."
+        },
+
+        {
+          time: "00:26",
+          title: "Acceder a Handy REVO",
+          text: "Entra en la carpeta Apps y selecciona la aplicación Handy REVO. Esta será la aplicación que utilizaremos para gestionar las ventas de Magic Snow."
+        },
+
+        {
+          time: "00:36",
+          title: "Iniciar sesión",
+          text: "Introduce el usuario y la contraseña asignados a tu tienda. Espera a que se inicie la sesión y se carguen los productos."
+        },
+
+        {
+          time: "01:10",
+          title: "Introducir el PIN",
+          text: "Cuando el sistema solicite el PIN, introduce el que te hayan facilitado internamente."
+        },
+
+        {
+          time: "01:18",
+          title: "Conocer la pantalla principal",
+          text: "En la pantalla principal encontrarás Venta rápida, el botón R de REVO para abrir el menú lateral y el apartado de soporte."
+        },
+
+        {
+          time: "01:30",
+          title: "Seleccionar la vista de cuadrados",
+          text: "Trabajaremos siempre con la vista de cuadrados. Para refrescar la pantalla, utiliza el botón situado en la parte inferior."
+        }
+
       ],
 
       important: [
-        "Gestiona todos los pagos a través de Handy REVO.",
-        "Utiliza Cobros de BBVA únicamente si REVO no funciona.",
-        "No utilizaremos Otros ni Calculadora.",
-        "Trabajaremos siempre con la vista de cuadrados."
+        "Todos los pagos se gestionarán a través de Handy REVO.",
+        "El botón Cobros de BBVA únicamente se utilizará si no funciona REVO, según lo indicado en el tutorial.",
+        "No utilizaremos las carpetas Otros ni Calculadora.",
+        "Utiliza siempre la vista de cuadrados.",
+        "El datáfono de Magic Snow está destinado exclusivamente a la operativa de la campaña."
       ],
 
       checklist: [
         "He encendido el datáfono.",
-        "He accedido a Handy REVO.",
+        "He accedido a Apps y Handy REVO.",
         "He iniciado sesión correctamente.",
         "Los productos se han cargado.",
         "He seleccionado la vista de cuadrados.",
         "Identifico Venta rápida y el menú lateral."
       ]
+
     },
+
+    // ==================================
+    // 02 - APERTURA DE CAJA
+    // ==================================
 
     {
       id: 2,
       title: "APERTURA DE CAJA",
-      videoId: "8AlF-eySvMM",
-      description: "Prepara la caja y abre el turno antes de comenzar las ventas.",
+      icon: "▣",
+      video: "8AlF-eySvMM",
+
+      description:
+        "Realiza la apertura de turno y prepara la caja antes de comenzar las ventas.",
 
       steps: [
-        [
-          "00:00",
-          "Acceder a Control de caja",
-          "Abre el menú lateral R y selecciona Control de caja. Encontrarás Abrir turno, Entrada/Salida y Reporte Z."
-        ],
-        [
-          "00:14",
-          "Abrir turno",
-          "Selecciona Abrir turno, introduce el fondo inicial de 150 € y confirma la apertura."
-        ],
-        [
-          "00:28",
-          "Acceder a Venta rápida",
-          "Una vez abierto el turno, selecciona Venta rápida para comenzar las ventas."
-        ],
-        [
-          "00:37",
-          "Seleccionar los productos",
-          "Selecciona Magic Snow o los Squishies si están disponibles en tu tienda o pop-up. Cada pulsación añade automáticamente una unidad."
-        ]
+
+        {
+          time: "00:05",
+          title: "Acceder a Control de caja",
+          text: "Abre el menú lateral mediante el botón R y selecciona Control de caja. Encontrarás las opciones Abrir turno, Entrada/Salida y Reporte Z."
+        },
+
+        {
+          time: "00:14",
+          title: "Abrir turno",
+          text: "Selecciona Abrir turno e introduce el efectivo correspondiente al fondo inicial de caja: 150 €. Confirma la apertura."
+        },
+
+        {
+          time: "00:28",
+          title: "Acceder a Venta rápida",
+          text: "Una vez abierto el turno, selecciona Venta rápida para comenzar la operativa de venta."
+        },
+
+        {
+          time: "00:37",
+          title: "Consultar los productos disponibles",
+          text: "Encontrarás el producto Magic Snow y, si tu tienda o pop-up dispone de ellos para la campaña, también aparecerán los Squishies."
+        },
+
+        {
+          time: "00:44",
+          title: "Añadir productos a la venta",
+          text: "Pulsa sobre el producto correspondiente. Cada pulsación añadirá automáticamente una unidad a la venta."
+        }
+
       ],
 
       important: [
-        "Abre el turno todos los días antes de comenzar las ventas.",
+        "Realiza la apertura de turno todos los días antes de comenzar las ventas.",
         "El fondo inicial de caja será de 150 €.",
-        "Utiliza Venta rápida para comenzar la operativa.",
+        "Comprueba que el turno está abierto antes de vender.",
         "Los productos disponibles pueden variar según la tienda o pop-up."
       ],
 
       checklist: [
         "He accedido a Control de caja.",
         "He seleccionado Abrir turno.",
-        "He introducido 150 € de fondo inicial.",
-        "He confirmado la apertura.",
+        "He introducido el fondo inicial de 150 €.",
+        "He confirmado la apertura de caja.",
         "He accedido a Venta rápida.",
         "He comprobado los productos disponibles."
       ]
+
     },
+
+    // ==================================
+    // 03 - COBROS CON DATÁFONO
+    // ==================================
 
     {
       id: 3,
       title: "COBROS CON DATÁFONO",
-      videoId: "BiY1IvGjqZI",
-      description: "Gestiona las ventas, aplica descuentos y realiza cobros en efectivo o con tarjeta.",
+      icon: "▤",
+      video: "BiY1IvGjqZI",
+
+      description:
+        "Aprende a gestionar las ventas, aplicar descuentos y realizar cobros en efectivo o con tarjeta mediante REVO.",
 
       steps: [
-        [
-          "00:00",
-          "Confirmar la venta",
-          "Selecciona los productos y cantidades correspondientes y pulsa Hecho para acceder a la pantalla de cobro."
-        ],
-        [
-          "00:05",
-          "Aplicar descuentos",
-          "Desde la pantalla de cobro puedes aplicar los descuentos del 50% o Family únicamente cuando corresponda."
-        ],
-        [
-          "00:18",
-          "Eliminar una venta",
-          "Si hay un error antes de cobrar, entra en Opciones y elimina la venta."
-        ],
-        [
-          "00:28",
-          "Seleccionar el método de pago",
-          "Pulsa el botón circular Cobrar y selecciona el método de pago correspondiente."
-        ],
-        [
-          "00:34",
-          "Cobro en efectivo",
-          "Introduce el efectivo recibido, comprueba el cambio calculado por REVO, pulsa el icono del billete de 100 y recoge el ticket impreso automáticamente."
-        ],
-        [
-          "01:04",
-          "Cobro con tarjeta",
-          "Selecciona Cobrar y el método de pago con tarjeta. Utiliza el lector del datáfono y completa el cobro con normalidad."
-        ]
+
+        {
+          time: "00:00",
+          title: "Confirmar los productos",
+          text: "Una vez seleccionados los productos y cantidades correspondientes, pulsa Hecho para acceder a la pantalla de cobro."
+        },
+
+        {
+          time: "00:05",
+          title: "Aplicar descuentos",
+          text: "Desde la pantalla de cobro podrás aplicar el descuento del 50% o el descuento Family, únicamente cuando corresponda."
+        },
+
+        {
+          time: "00:18",
+          title: "Eliminar una venta",
+          text: "Si se ha producido una confusión antes de cobrar, accede a Opciones y selecciona la opción para eliminar la venta."
+        },
+
+        {
+          time: "00:28",
+          title: "Acceder al cobro",
+          text: "Pulsa el botón circular de Cobrar para seleccionar el método de pago."
+        },
+
+        {
+          time: "00:34",
+          title: "Introducir el efectivo recibido",
+          text: "Si el cliente paga en efectivo, introduce la cantidad que te ha entregado. REVO calculará automáticamente el cambio que debes devolver."
+        },
+
+        {
+          time: "00:45",
+          title: "Confirmar el cobro en efectivo",
+          text: "Pulsa el icono del billete de 100 para confirmar el pago en efectivo. El datáfono imprimirá automáticamente el ticket."
+        },
+
+        {
+          time: "01:04",
+          title: "Cobrar con tarjeta",
+          text: "Selecciona el producto, pulsa Hecho, accede a Cobrar y selecciona el método de pago con tarjeta."
+        },
+
+        {
+          time: "01:11",
+          title: "Utilizar el lector de tarjetas",
+          text: "Utiliza el lector del datáfono y completa el cobro con normalidad."
+        }
+
       ],
 
       important: [
-        "Comprueba siempre los productos y cantidades antes de cobrar.",
+        "Comprueba los productos y cantidades antes de cobrar.",
         "Aplica descuentos únicamente cuando corresponda.",
         "Selecciona correctamente el método de pago.",
-        "En los cobros en efectivo, comprueba el cambio indicado por REVO."
+        "En los pagos en efectivo, comprueba el cambio indicado por REVO."
       ],
 
       checklist: [
         "Sé confirmar los productos de una venta.",
-        "Sé aplicar los descuentos cuando corresponde.",
-        "Sé eliminar una venta antes del cobro.",
+        "Sé aplicar los descuentos correspondientes.",
+        "Sé eliminar una venta antes de cobrar.",
         "Sé realizar un cobro en efectivo.",
         "Sé comprobar el cambio.",
         "Sé realizar un cobro con tarjeta."
       ]
+
     },
+
+    // ==================================
+    // 04 - DEVOLUCIONES
+    // ==================================
 
     {
       id: 4,
       title: "DEVOLUCIONES",
-      videoId: "L_JP7XzSS4U",
-      description: "Localiza una venta y gestiona su devolución mediante el método de pago original.",
+      icon: "↶",
+      video: "L_JP7XzSS4U",
+
+      description:
+        "Localiza una venta en el Histórico de REVO y realiza su devolución mediante el método de pago original.",
 
       steps: [
-        [
-          "00:00",
-          "Acceder al Histórico",
-          "Abre el menú lateral R y selecciona Histórico."
-        ],
-        [
-          "00:14",
-          "Localizar la compra",
-          "Selecciona la fecha de compra. REVO mostrará las ventas realizadas durante ese día. Identifica la venta correspondiente."
-        ],
-        [
-          "00:22",
-          "Hacer devolución",
-          "Pulsa los tres puntos de la venta y selecciona Hacer devolución."
-        ],
-        [
-          "00:30",
-          "Devolver el importe",
-          "Si la compra fue con tarjeta, la devolución se gestiona con tarjeta. Si fue en efectivo, entrega el importe correspondiente en efectivo."
-        ]
+
+        {
+          time: "00:08",
+          title: "Acceder al Histórico",
+          text: "Abre el menú lateral mediante el botón R y selecciona Histórico."
+        },
+
+        {
+          time: "00:14",
+          title: "Localizar la compra",
+          text: "Busca la fecha en la que se realizó la compra. REVO mostrará el listado de las ventas realizadas ese día."
+        },
+
+        {
+          time: "00:22",
+          title: "Seleccionar Hacer devolución",
+          text: "Identifica la venta correspondiente, pulsa los tres puntos y selecciona Hacer devolución."
+        },
+
+        {
+          time: "00:30",
+          title: "Gestionar la devolución",
+          text: "La devolución se realiza mediante el método de pago original. Si la compra fue con tarjeta, se devolverá mediante tarjeta. Si fue en efectivo, devolveremos el importe en efectivo."
+        }
+
       ],
 
       important: [
         "Las devoluciones se gestionan desde Histórico.",
-        "Comprueba que has seleccionado la venta correcta.",
+        "Comprueba que has localizado la compra correcta.",
         "Utiliza siempre el mismo método de pago de la compra original."
       ],
 
       checklist: [
         "Sé acceder al Histórico.",
         "Sé buscar una compra por fecha.",
-        "Sé localizar la venta correspondiente.",
+        "Sé localizar la venta correcta.",
         "Identifico la opción Hacer devolución.",
         "Sé gestionar una devolución en efectivo.",
         "Sé gestionar una devolución con tarjeta."
       ]
+
     },
+
+    // ==================================
+    // 05 - CIERRE DE TURNO E INFORME Z
+    // ==================================
 
     {
       id: 5,
       title: "CIERRE DE TURNO E INFORME Z",
-      videoId: "hxzUyt_-xGc",
-      description: "Realiza el cierre diario, comprueba el efectivo y consulta el Informe Z.",
+      icon: "▥",
+      video: "hxzUyt_-xGc",
+
+      description:
+        "Realiza el cierre diario de caja, comprueba el efectivo y obtén el Informe Z.",
 
       steps: [
-        [
-          "00:00",
-          "Acceder a Control de caja",
-          "Al finalizar la jornada, abre el menú lateral, selecciona Control de caja y pulsa Cerrar turno."
-        ],
-        [
-          "00:05",
-          "Recontar el efectivo",
-          "Cuenta el efectivo disponible teniendo en cuenta los 150 € iniciales y las ventas en efectivo. Introduce el importe correspondiente y completa el cierre."
-        ],
-        [
-          "00:22",
-          "Obtener el Informe Z",
-          "Accede a Reporte Z, imprime el informe y comprueba los totales, cantidades y fondos inicial y final."
-        ],
-        [
-          "00:40",
-          "Sincronizar REVO",
-          "Si sales accidentalmente de la aplicación, vuelve a entrar con el PIN asignado y sincroniza. También deberás sincronizar cuando Central comunique una actualización."
-        ],
-        [
-          "01:06",
-          "Soporte y cierre de sesión",
-          "Desde el menú lateral podrás cerrar sesión o acceder a ayuda. En caso de incidencia, contacta directamente con el soporte interno de La Casa de las Carcasas."
-        ]
+
+        {
+          time: "00:00",
+          title: "Acceder a Control de caja",
+          text: "Al finalizar la jornada, abre el menú lateral, accede a Control de caja y selecciona Cerrar turno."
+        },
+
+        {
+          time: "00:05",
+          title: "Realizar el recuento de efectivo",
+          text: "Cuenta el efectivo disponible teniendo en cuenta el fondo inicial de 150 € y los movimientos de efectivo realizados durante la jornada."
+        },
+
+        {
+          time: "00:13",
+          title: "Completar el cierre de turno",
+          text: "Introduce el efectivo correspondiente y completa el cierre. En el ejemplo del tutorial, el fondo inicial de 150 € y unas ventas en efectivo de 150 € dan un total de 300 €."
+        },
+
+        {
+          time: "00:22",
+          title: "Obtener el Informe Z",
+          text: "Una vez cerrado el turno, selecciona Reporte Z e imprime el informe."
+        },
+
+        {
+          time: "00:31",
+          title: "Comprobar los importes",
+          text: "En el Informe Z podrás consultar los totales, las cantidades y el fondo de caja inicial y final. Comprueba que los importes coinciden."
+        },
+
+        {
+          time: "00:40",
+          title: "Volver a acceder a REVO",
+          text: "Si sales accidentalmente de la aplicación, vuelve a acceder, introduce el PIN facilitado internamente y sincroniza."
+        },
+
+        {
+          time: "00:52",
+          title: "Sincronizar la aplicación",
+          text: "Siempre que desde Central se comunique una actualización, utiliza la opción Sincronizar del menú lateral."
+        },
+
+        {
+          time: "01:06",
+          title: "Soporte y cierre de sesión",
+          text: "Desde el menú lateral podrás cerrar sesión o acceder a ayuda. Ante cualquier incidencia, contacta directamente con el equipo de soporte interno de La Casa de las Carcasas."
+        }
+
       ],
 
       important: [
-        "Realiza el cierre de turno todos los días al finalizar la jornada.",
+        "Realiza el cierre de turno todos los días.",
         "Ten en cuenta el fondo inicial de 150 €.",
         "Imprime el Informe Z y comprueba los importes.",
         "Sincroniza REVO cuando Central comunique una actualización.",
@@ -247,64 +372,103 @@ const APP_CONTENT = {
         "He realizado el recuento de efectivo.",
         "He tenido en cuenta el fondo inicial.",
         "He completado el cierre de turno.",
-        "He obtenido e impreso el Informe Z.",
+        "He obtenido el Informe Z.",
         "He comprobado los importes.",
         "Sé cuándo debo sincronizar REVO.",
         "Sé a quién contactar en caso de incidencia."
       ]
+
     },
+
+    // ==================================
+    // 06 - DUDAS Y SOPORTE
+    // ==================================
 
     {
       id: 6,
       title: "DUDAS Y SOPORTE",
-      description: "Consulta las preguntas frecuentes y los canales de ayuda durante la campaña Magic Snow.",
+      icon: "?",
+      video: null,
+
+      description:
+        "Consulta las preguntas frecuentes y los canales de ayuda durante la campaña Magic Snow.",
 
       faq: [
-        [
-          "¿Qué hago si no funciona Handy REVO?",
-          "El tutorial indica utilizar Cobros de BBVA únicamente si REVO no funciona. Ante problemas de acceso, consulta con soporte interno."
-        ],
-        [
-          "¿Con cuánto efectivo debo abrir la caja?",
-          "El fondo inicial de caja será de 150 €. Accede a Control de caja y selecciona Abrir turno."
-        ],
-        [
-          "¿Cómo elimino una venta antes de cobrar?",
-          "Desde la pantalla de cobro, accede a Opciones y elimina la venta antes de realizar el cobro."
-        ],
-        [
-          "¿Qué hago si se rechaza un pago?",
-          "Procedimiento pendiente de confirmar con soporte interno."
-        ],
-        [
-          "¿Cómo realizo una devolución?",
-          "Accede a Histórico, localiza la venta, pulsa los tres puntos y selecciona Hacer devolución."
-        ],
-        [
-          "¿Puedo devolver en efectivo una compra realizada con tarjeta?",
-          "No. La devolución debe realizarse mediante el mismo método de pago de la compra original."
-        ],
-        [
-          "¿Dónde encuentro el Informe Z?",
-          "En Control de caja, selecciona Reporte Z después de cerrar el turno."
-        ],
-        [
-          "¿Qué hago si salgo accidentalmente de REVO?",
-          "Vuelve a acceder a la aplicación, introduce el PIN asignado y sincroniza."
-        ],
-        [
-          "¿Cuándo debo sincronizar REVO?",
-          "Cuando Central comunique una actualización o después de volver a acceder a la aplicación tras una salida accidental."
-        ],
-        [
-          "¿Con quién contacto si tengo una incidencia?",
-          "Contacta con soporte interno de La Casa de las Carcasas. El canal de contacto está pendiente de confirmar."
-        ]
+
+        {
+          question: "¿Qué aplicación debo utilizar?",
+          answer: "Handy REVO. Encontrarás la aplicación dentro de la carpeta Apps del datáfono."
+        },
+
+        {
+          question: "¿Qué hago si no funciona Handy REVO?",
+          answer: "Según el tutorial de inicio, la opción Cobros de BBVA se utilizará únicamente cuando no funcione Handy REVO. Contacta con soporte interno para resolver la incidencia."
+        },
+
+        {
+          question: "¿Con cuánto efectivo debo abrir la caja?",
+          answer: "El fondo inicial de caja será de 150 €. Accede a Control de caja y selecciona Abrir turno."
+        },
+
+        {
+          question: "¿Cómo añado productos a la venta?",
+          answer: "Accede a Venta rápida. Cada pulsación sobre el producto añadirá una unidad a la venta."
+        },
+
+        {
+          question: "¿Cómo elimino una venta antes de cobrar?",
+          answer: "Desde la pantalla de cobro, accede a Opciones y selecciona la opción para eliminar la venta."
+        },
+
+        {
+          question: "¿Qué descuentos puedo aplicar?",
+          answer: "En la pantalla de cobro están disponibles los descuentos del 50% y Family. Aplícalos únicamente cuando corresponda."
+        },
+
+        {
+          question: "¿Cómo sé cuánto cambio debo devolver?",
+          answer: "Introduce en REVO el importe entregado por el cliente. La aplicación calculará automáticamente el cambio."
+        },
+
+        {
+          question: "¿Qué hago si se rechaza un pago?",
+          answer: "Consulta con el equipo de soporte interno. El procedimiento específico ante pagos rechazados está pendiente de confirmar."
+        },
+
+        {
+          question: "¿Cómo realizo una devolución?",
+          answer: "Accede a Histórico, busca la fecha de compra, localiza la venta, pulsa los tres puntos y selecciona Hacer devolución."
+        },
+
+        {
+          question: "¿Puedo devolver en efectivo una compra realizada con tarjeta?",
+          answer: "No. La devolución debe realizarse mediante el mismo método de pago de la compra original."
+        },
+
+        {
+          question: "¿Dónde encuentro el Informe Z?",
+          answer: "En Control de caja, selecciona Reporte Z después de realizar el cierre de turno."
+        },
+
+        {
+          question: "¿Qué hago si salgo accidentalmente de REVO?",
+          answer: "Vuelve a acceder a la aplicación, introduce el PIN facilitado internamente y sincroniza."
+        },
+
+        {
+          question: "¿Cuándo debo sincronizar REVO?",
+          answer: "Cuando Central comunique alguna actualización o después de volver a acceder tras una salida accidental de la aplicación."
+        },
+
+        {
+          question: "¿Con quién contacto si tengo una incidencia?",
+          answer: "Contacta con el equipo de soporte interno de La Casa de las Carcasas."
+        }
+
       ]
-    }
-  ]
-};
 
     }
+
   ]
+
 };
