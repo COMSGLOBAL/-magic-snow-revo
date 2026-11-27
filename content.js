@@ -52,7 +52,7 @@ const APP_CONTENT = {
         {
           time: "00:36",
           title: "Si recibís dos datáfonos",
-          text: "Comprueba que ambos dispositivos están configurados con las credenciales correspondientes al punto de venta al que pertenecen."
+          text: "Las tiendas que dispongan de un pop-up deberán utilizar credenciales diferentes para cada punto de venta. El datáfono de tienda utilizará las credenciales de tienda y los dos datáfonos del pop-up utilizarán las credenciales propias del pop-up. Ejemplo: Mallorca FAN tiene como número de tienda el 25 y como número de pop-up el 8001. Si habéis iniciado sesión con las credenciales de tienda en los tres dispositivos, cerrad sesión en los dos datáfonos del pop-up y volved a iniciarla con las credenciales correctas.."
         },
 
         {
@@ -82,7 +82,9 @@ const APP_CONTENT = {
       ],
 
       important: [
-
+"🚨 TIENDAS CON POP-UP: nunca utilicéis las mismas credenciales en los tres datáfonos.",
+"El datáfono de tienda utilizará las credenciales de tienda y los dos datáfonos del pop-up utilizarán las credenciales propias del pop-up.",
+"Ejemplo: Mallorca FAN - Número de tienda: 25. Número de pop-up: 8001.",
         "🔐 CREDENCIALES DE ACCESO: utiliza las credenciales correspondientes a tu punto de venta, facilitadas internamente.",
 
         "Utiliza el PIN de acceso facilitado a través de la comunicación interna.",
@@ -509,8 +511,8 @@ const APP_CONTENT = {
         },
 
         {
-          question: "¿Qué ocurre si recibimos dos datáfonos?",
-          answer: "Comprueba que ambos dispositivos utilizan las credenciales correspondientes al punto de venta al que pertenecen."
+         question: "¿Qué credenciales debemos utilizar si tenemos un pop-up?",
+answer: "El datáfono de tienda debe utilizar las credenciales de tienda y los dos datáfonos del pop-up deben utilizar las credenciales propias del pop-up. Si habéis iniciado sesión incorrectamente, cerrad sesión en los dos dispositivos del pop-up y volved a iniciarla con las credenciales correspondientes."
         },
 
         {
