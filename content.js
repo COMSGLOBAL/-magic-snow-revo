@@ -452,8 +452,6 @@ checklist: [
           question: "¿Qué hago si no puedo iniciar sesión?",
           answer: "Comprueba que estás utilizando el usuario y la contraseña correspondientes a tu tienda. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
         },
-
-        {
           
 {
   question: "¿Qué hago si no funciona Handy REVO?",
