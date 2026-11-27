@@ -87,7 +87,11 @@ const APP_CONTENT = {
         "Si recibís dos datáfonos, utilizad las mismas credenciales en ambos.",
         "🔑 ¡IMPORTANTE! El PIN de acceso es siempre 0000.",
         "Todos los pagos se gestionarán a través de Handy REVO.",
-        "El botón Cobros de BBVA únicamente se utilizará si no funciona REVO, según lo indicado en el tutorial.",
+
+"🚨 REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow.",
+"Si REVO no funciona, contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia.",
+"Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar Cobros de BBVA de manera excepcional para no perder la venta.",
+"¡IMPORTANTE! En cuanto se resuelva la incidencia, vuelve a utilizar REVO. BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro.",
         "No utilizaremos las carpetas Otros ni Calculadora.",
         "Utiliza siempre la vista de cuadrados.",
         "El datáfono de Magic Snow está destinado exclusivamente a la operativa de la campaña."
@@ -450,8 +454,12 @@ checklist: [
         },
 
         {
-          question: "¿Qué hago si no funciona Handy REVO?",
-          answer: "Según el tutorial de inicio, la opción Cobros de BBVA se utilizará únicamente cuando no funcione Handy REVO. Contacta con soporte interno para resolver la incidencia."
+          
+{
+  question: "¿Qué hago si no funciona Handy REVO?",
+  answer: "REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow. En caso de que no funcione: 1. Contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia. 2. Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar la opción Cobros de BBVA de manera excepcional para no perder la venta. 3. En cuanto se resuelva la incidencia, vuelve a utilizar REVO. ¡IMPORTANTE! BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro."
+},
+
         },
 
         {
