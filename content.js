@@ -46,7 +46,7 @@ const APP_CONTENT = {
         {
           time: "00:36",
           title: "🔐 CREDENCIALES DE ACCESO",
-          text: "Utiliza las credenciales correspondientes a tu punto de venta, facilitadas a través de la comunicación interna de Magic Snow."
+          text: "Utiliza las credenciales correspondientes a tu punto de venta, el usuario será con el numero de tienda ejemplo: tienda001 contraseña: tienda001."
         },
 
         {
