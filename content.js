@@ -40,19 +40,19 @@ const APP_CONTENT = {
         {
           time: "00:26",
           title: "Acceder a Handy REVO",
-          text: "Entra en la carpeta Apps y selecciona la aplicación Handy REVO. Esta será la aplicación que utilizaremos para gestionar las ventas de Magic Snow."
+          text: "Entra en la carpeta Apps y selecciona la aplicación Handy REVO. Esta es la aplicación de uso obligatorio para gestionar todas las ventas de Magic Snow."
         },
 
         {
           time: "00:36",
           title: "🔐 CREDENCIALES DE ACCESO",
-          text: "Usuario: el mismo que utilizáis en la Intranet. Contraseña: igual que el usuario. Ejemplo: Usuario: tienda001 / Contraseña: tienda001."
+          text: "Utiliza las credenciales correspondientes a tu punto de venta, facilitadas a través de la comunicación interna de Magic Snow."
         },
 
         {
           time: "00:36",
           title: "Si recibís dos datáfonos",
-          text: "Si vuestra tienda recibe dos datáfonos para la campaña Magic Snow, debéis utilizar las mismas credenciales de acceso en ambos dispositivos."
+          text: "Comprueba que ambos dispositivos están configurados con las credenciales correspondientes al punto de venta al que pertenecen."
         },
 
         {
@@ -64,7 +64,7 @@ const APP_CONTENT = {
         {
           time: "01:10",
           title: "🔑 PIN DE ACCESO",
-          text: "¡IMPORTANTE! El PIN de acceso a REVO es siempre: 0000."
+          text: "Introduce el PIN de acceso facilitado a través de la comunicación interna de Magic Snow."
         },
 
         {
@@ -82,31 +82,47 @@ const APP_CONTENT = {
       ],
 
       important: [
-        "🔐 CREDENCIALES DE ACCESO: el usuario es el mismo que utilizáis en la Intranet y la contraseña es igual que el usuario.",
-        "Ejemplo: Usuario: tienda001 / Contraseña: tienda001.",
-        "Si recibís dos datáfonos, utilizad las mismas credenciales en ambos.",
-        "🔑 ¡IMPORTANTE! El PIN de acceso es siempre 0000.",
-        "Todos los pagos se gestionarán a través de Handy REVO.",
 
-"🚨 REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow.",
-"Si REVO no funciona, contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia.",
-"Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar Cobros de BBVA de manera excepcional para no perder la venta.",
-"¡IMPORTANTE! En cuanto se resuelva la incidencia, vuelve a utilizar REVO. BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro.",
+        "🔐 CREDENCIALES DE ACCESO: utiliza las credenciales correspondientes a tu punto de venta, facilitadas internamente.",
+
+        "Utiliza el PIN de acceso facilitado a través de la comunicación interna.",
+
+        "🚨 REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow.",
+
+        "Si REVO no funciona, contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia.",
+
+        "Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar Cobros de BBVA de manera excepcional para no perder la venta.",
+
+        "¡IMPORTANTE! En cuanto se resuelva la incidencia, vuelve a utilizar REVO. BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro.",
+
         "No utilizaremos las carpetas Otros ni Calculadora.",
+
         "Utiliza siempre la vista de cuadrados.",
+
         "El datáfono de Magic Snow está destinado exclusivamente a la operativa de la campaña."
+
       ],
 
       checklist: [
+
         "He encendido el datáfono.",
+
         "He accedido a Apps y Handy REVO.",
-        "Conozco las credenciales de acceso de mi tienda.",
+
+        "Conozco las credenciales de acceso de mi punto de venta.",
+
         "He iniciado sesión correctamente.",
-        "Sé que debo utilizar las mismas credenciales si recibimos dos datáfonos.",
+
+        "He comprobado que los dispositivos utilizan las credenciales correspondientes.",
+
         "Los productos se han cargado correctamente.",
-        "Sé que el PIN de acceso es 0000.",
+
+        "Conozco el PIN de acceso facilitado internamente.",
+
         "He seleccionado la vista de cuadrados.",
+
         "Identifico Venta rápida y el menú lateral."
+
       ]
 
     },
@@ -122,14 +138,16 @@ const APP_CONTENT = {
       video: "8AlF-eySvMM",
 
       description:
-        "Realiza la apertura de turno y prepara la caja antes de comenzar las ventas.",
+        "Sincroniza REVO, realiza la apertura de turno y prepara la caja antes de comenzar las ventas.",
 
       steps: [
-{
-  time: "",
-  title: "🔄 Sincronización diaria",
-  text: "Como buena práctica, recomendamos pulsar Sync (Sincronizar) en el menú lateral de REVO cada mañana antes de comenzar las ventas. De esta forma, se descargarán las últimas actualizaciones del catálogo: cambios de precios, nuevos productos y otras modificaciones."
-},
+
+        {
+          time: "",
+          title: "🔄 Sincronización diaria",
+          text: "Como buena práctica, recomendamos pulsar Sync (Sincronizar) en el menú lateral de REVO cada mañana antes de comenzar las ventas. De esta forma, se descargarán las últimas actualizaciones del catálogo: cambios de precios, nuevos productos y otras modificaciones."
+        },
+
         {
           time: "00:05",
           title: "Acceder a Control de caja",
@@ -162,26 +180,39 @@ const APP_CONTENT = {
 
       ],
 
-     
-important: [
-  "🔄 BUENA PRÁCTICA: sincroniza REVO cada mañana antes de comenzar las ventas.",
-  "La sincronización permite descargar cambios de precios, nuevos productos y otras actualizaciones del catálogo.",
-  "Realiza la apertura de turno todos los días antes de comenzar las ventas.",
-  "El fondo inicial de caja será de 150 €.",
-  "Comprueba que el turno está abierto antes de vender.",
-  "Los productos disponibles pueden variar según la tienda o pop-up."
-],
+      important: [
 
-checklist: [
-  "He sincronizado REVO antes de comenzar las ventas.",
-  "He accedido a Control de caja.",
-  "He seleccionado Abrir turno.",
-  "He introducido el fondo inicial de 150 €.",
-  "He confirmado la apertura de caja.",
-  "He accedido a Venta rápida.",
-  "He comprobado los productos disponibles."
-]
+        "🔄 BUENA PRÁCTICA: sincroniza REVO cada mañana antes de comenzar las ventas.",
 
+        "La sincronización permite descargar cambios de precios, nuevos productos y otras actualizaciones del catálogo.",
+
+        "Realiza la apertura de turno todos los días antes de comenzar las ventas.",
+
+        "El fondo inicial de caja será de 150 €.",
+
+        "Comprueba que el turno está abierto antes de vender.",
+
+        "Los productos disponibles pueden variar según la tienda o pop-up."
+
+      ],
+
+      checklist: [
+
+        "He sincronizado REVO antes de comenzar las ventas.",
+
+        "He accedido a Control de caja.",
+
+        "He seleccionado Abrir turno.",
+
+        "He introducido el fondo inicial de 150 €.",
+
+        "He confirmado la apertura de caja.",
+
+        "He accedido a Venta rápida.",
+
+        "He comprobado los productos disponibles."
+
+      ]
 
     },
 
@@ -251,19 +282,31 @@ checklist: [
       ],
 
       important: [
+
         "Comprueba los productos y cantidades antes de cobrar.",
+
         "Aplica descuentos únicamente cuando corresponda.",
+
         "Selecciona correctamente el método de pago.",
+
         "En los pagos en efectivo, comprueba el cambio indicado por REVO."
+
       ],
 
       checklist: [
+
         "Sé confirmar los productos de una venta.",
+
         "Sé aplicar los descuentos correspondientes.",
+
         "Sé eliminar una venta antes de cobrar.",
+
         "Sé realizar un cobro en efectivo.",
+
         "Sé comprobar el cambio.",
+
         "Sé realizar un cobro con tarjeta."
+
       ]
 
     },
@@ -310,18 +353,29 @@ checklist: [
       ],
 
       important: [
+
         "Las devoluciones se gestionan desde Histórico.",
+
         "Comprueba que has localizado la compra correcta.",
+
         "Utiliza siempre el mismo método de pago de la compra original."
+
       ],
 
       checklist: [
+
         "Sé acceder al Histórico.",
+
         "Sé buscar una compra por fecha.",
+
         "Sé localizar la venta correcta.",
+
         "Identifico la opción Hacer devolución.",
+
         "Sé gestionar una devolución en efectivo.",
+
         "Sé gestionar una devolución con tarjeta."
+
       ]
 
     },
@@ -374,13 +428,13 @@ checklist: [
         {
           time: "00:40",
           title: "Volver a acceder a REVO",
-          text: "Si sales accidentalmente de la aplicación, vuelve a acceder a Handy REVO, introduce siempre el PIN 0000 y sincroniza la aplicación."
+          text: "Si sales accidentalmente de la aplicación, vuelve a acceder a Handy REVO, introduce el PIN facilitado internamente y sincroniza la aplicación."
         },
 
         {
           time: "00:52",
           title: "Sincronizar la aplicación",
-          text: "Siempre que desde Central se comunique una actualización, utiliza la opción Sincronizar del menú lateral."
+          text: "Como buena práctica, recomendamos sincronizar REVO cada mañana antes de comenzar las ventas. También deberás sincronizar cuando Central comunique una actualización."
         },
 
         {
@@ -392,23 +446,39 @@ checklist: [
       ],
 
       important: [
+
         "Realiza el cierre de turno todos los días al finalizar la jornada.",
+
         "Ten en cuenta el fondo inicial de 150 €.",
+
         "Imprime el Informe Z y comprueba los importes.",
-        "Recuerda que el PIN de REVO es siempre 0000.",
-        "Sincroniza REVO cuando Central comunique una actualización.",
+
+        "Utiliza el PIN de acceso facilitado internamente.",
+
+        "Sincroniza REVO cada mañana antes de comenzar las ventas y siempre que Central comunique una actualización.",
+
         "Ante cualquier incidencia, contacta con soporte@lacasadelascarcasas.es."
+
       ],
 
       checklist: [
+
         "He accedido a Control de caja.",
+
         "He realizado el recuento de efectivo.",
+
         "He tenido en cuenta el fondo inicial.",
+
         "He completado el cierre de turno.",
+
         "He obtenido e impreso el Informe Z.",
+
         "He comprobado los importes.",
+
         "Sé cuándo debo sincronizar REVO.",
+
         "Sé a quién contactar en caso de incidencia."
+
       ]
 
     },
@@ -430,34 +500,33 @@ checklist: [
 
         {
           question: "¿Qué aplicación debo utilizar?",
-          answer: "Handy REVO. Encontrarás la aplicación dentro de la carpeta Apps del datáfono."
+          answer: "Handy REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow. Encontrarás la aplicación dentro de la carpeta Apps del datáfono."
         },
 
         {
           question: "¿Cuáles son las credenciales de acceso a REVO?",
-          answer: "El usuario es el mismo que utilizáis en la Intranet y la contraseña es igual que el usuario. Ejemplo: Usuario: tienda001 / Contraseña: tienda001."
+          answer: "Utiliza las credenciales correspondientes a tu punto de venta, facilitadas a través de la comunicación interna de Magic Snow."
         },
 
         {
           question: "¿Qué ocurre si recibimos dos datáfonos?",
-          answer: "Debéis utilizar las mismas credenciales de acceso de vuestra tienda en ambos datáfonos."
+          answer: "Comprueba que ambos dispositivos utilizan las credenciales correspondientes al punto de venta al que pertenecen."
         },
 
         {
           question: "¿Cuál es el PIN de REVO?",
-          answer: "¡IMPORTANTE! El PIN que debes introducir siempre es 0000."
+          answer: "Utiliza el PIN facilitado a través de la comunicación interna de Magic Snow."
         },
 
         {
           question: "¿Qué hago si no puedo iniciar sesión?",
-          answer: "Comprueba que estás utilizando el usuario y la contraseña correspondientes a tu tienda. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
+          answer: "Comprueba que estás utilizando el usuario y la contraseña correspondientes a tu punto de venta. Si la incidencia continúa, contacta con soporte@lacasadelascarcasas.es."
         },
-          
-{
-  question: "¿Qué hago si no funciona Handy REVO?",
-  answer: "REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow. En caso de que no funcione: 1. Contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia. 2. Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar la opción Cobros de BBVA de manera excepcional para no perder la venta. 3. En cuanto se resuelva la incidencia, vuelve a utilizar REVO. ¡IMPORTANTE! BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro."
-},
 
+        {
+          question: "¿Qué hago si no funciona Handy REVO?",
+          answer: "REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow. En caso de que no funcione: 1. Contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia. 2. Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar la opción Cobros de BBVA de manera excepcional para no perder la venta. 3. En cuanto se resuelva la incidencia, vuelve a utilizar REVO. ¡IMPORTANTE! BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro."
+        },
 
         {
           question: "¿Con cuánto efectivo debo abrir la caja?",
@@ -506,12 +575,12 @@ checklist: [
 
         {
           question: "¿Qué hago si salgo accidentalmente de REVO?",
-          answer: "Vuelve a acceder a Handy REVO, introduce el PIN 0000 y selecciona Sincronizar."
+          answer: "Vuelve a acceder a Handy REVO, introduce el PIN facilitado internamente y selecciona Sincronizar."
         },
 
         {
           question: "¿Cuándo debo sincronizar REVO?",
-          answer: "Cuando Central comunique alguna actualización o después de volver a acceder tras una salida accidental de la aplicación."
+          answer: "Como buena práctica, recomendamos pulsar Sync (Sincronizar) cada mañana antes de comenzar las ventas. De esta forma, se descargarán las últimas actualizaciones del catálogo, incluyendo cambios de precios y nuevos productos. También deberás sincronizar cuando Central comunique una actualización o después de volver a acceder tras una salida accidental de la aplicación."
         },
 
         {
