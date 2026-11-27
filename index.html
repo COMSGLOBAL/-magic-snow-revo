@@ -213,9 +213,24 @@
 
   <!-- CARGA DE LOS ARCHIVOS JAVASCRIPT -->
 
-  <script src="./content.js?v=20"></script>
 
-  <script src="./script.js?v=20"></script>
+<script>
+  window.addEventListener("error", function(event) {
+    document.getElementById("content").textContent =
+      "ERROR DETECTADO: " + event.message +
+      " | Archivo: " + event.filename +
+      " | Línea: " + event.lineno;
+  });
+</script>
+
+<script src="./content.js?v=30"
+        onerror="document.getElementById('content').textContent='ERROR: No se ha podido cargar content.js';">
+</script>
+
+<script src="./script.js?v=30"
+        onerror="document.getElementById('content').textContent='ERROR: No se ha podido cargar script.js';">
+</script>
+
 
 </body>
 
