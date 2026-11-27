@@ -121,7 +121,11 @@ const APP_CONTENT = {
         "Realiza la apertura de turno y prepara la caja antes de comenzar las ventas.",
 
       steps: [
-
+{
+  time: "",
+  title: "🔄 Sincronización diaria",
+  text: "Como buena práctica, recomendamos pulsar Sync (Sincronizar) en el menú lateral de REVO cada mañana antes de comenzar las ventas. De esta forma, se descargarán las últimas actualizaciones del catálogo: cambios de precios, nuevos productos y otras modificaciones."
+},
         {
           time: "00:05",
           title: "Acceder a Control de caja",
@@ -154,21 +158,26 @@ const APP_CONTENT = {
 
       ],
 
-      important: [
-        "Realiza la apertura de turno todos los días antes de comenzar las ventas.",
-        "El fondo inicial de caja será de 150 €.",
-        "Comprueba que el turno está abierto antes de vender.",
-        "Los productos disponibles pueden variar según la tienda o pop-up."
-      ],
+     
+important: [
+  "🔄 BUENA PRÁCTICA: sincroniza REVO cada mañana antes de comenzar las ventas.",
+  "La sincronización permite descargar cambios de precios, nuevos productos y otras actualizaciones del catálogo.",
+  "Realiza la apertura de turno todos los días antes de comenzar las ventas.",
+  "El fondo inicial de caja será de 150 €.",
+  "Comprueba que el turno está abierto antes de vender.",
+  "Los productos disponibles pueden variar según la tienda o pop-up."
+],
 
-      checklist: [
-        "He accedido a Control de caja.",
-        "He seleccionado Abrir turno.",
-        "He introducido el fondo inicial de 150 €.",
-        "He confirmado la apertura de caja.",
-        "He accedido a Venta rápida.",
-        "He comprobado los productos disponibles."
-      ]
+checklist: [
+  "He sincronizado REVO antes de comenzar las ventas.",
+  "He accedido a Control de caja.",
+  "He seleccionado Abrir turno.",
+  "He introducido el fondo inicial de 150 €.",
+  "He confirmado la apertura de caja.",
+  "He accedido a Venta rápida.",
+  "He comprobado los productos disponibles."
+]
+
 
     },
 
