@@ -49,16 +49,13 @@ const APP_CONTENT = {
           text: "Utiliza las credenciales correspondientes a tu punto de venta, el usuario será con el numero de tienda ejemplo: tienda001 contraseña: tienda001."
         },
 
-        {
-          time: "00:36",
-          
-title: "🔐 IMPORTANTE | Tiendas con pop-up",
-text: "Las tiendas que dispongan de un pop-up deberán utilizar credenciales diferentes para cada punto de venta. El datáfono de tienda utilizará las credenciales de tienda y los dos datáfonos del pop-up utilizarán las credenciales propias del pop-up. Ejemplo: Mallorca FAN tiene como número de tienda el 25 y como número de pop-up el 8001. Si habéis iniciado sesión con las credenciales de tienda en los tres dispositivos, cerrad sesión en los dos datáfonos del pop-up y volved a iniciarla con las credenciales correctas."
+     
+{
+  time: "00:36",
+  title: "🔐 IMPORTANTE | Tiendas con pop-up",
+  text: "Las tiendas que dispongan de un pop-up deberán utilizar credenciales diferentes para cada punto de venta. El datáfono de tienda utilizará las credenciales de tienda y los dos datáfonos del pop-up utilizarán las credenciales propias del pop-up. Ejemplo: Mallorca FAN tiene como número de tienda el 25 y como número de pop-up el 8001. Si habéis iniciado sesión con las credenciales de tienda en los tres dispositivos, cerrad sesión en los dos datáfonos del pop-up y volved a iniciarla con las credenciales correctas."
+},
 
-            El datáfono de tienda utilizará las credenciales de tienda y los dos datáfonos del pop-up utilizarán las credenciales propias del pop-up. 
-            Ejemplo: Mallorca FAN tiene como número de tienda el 25 y como número de pop-up el 8001. 
-            Si habéis iniciado sesión con las credenciales de tienda en los tres dispositivos, cerrad sesión en los dos datáfonos del pop-up y volved a iniciarla con las credenciales correctas.."
-        },
 
         {
           time: "00:55",
