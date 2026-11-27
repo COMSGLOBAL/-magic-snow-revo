@@ -458,7 +458,6 @@ checklist: [
   answer: "REVO es la aplicación de uso obligatorio para todas las ventas de Magic Snow. En caso de que no funcione: 1. Contacta inmediatamente con Soporte: soporte@lacasadelascarcasas.es para solucionar la incidencia. 2. Únicamente en un caso extremo, si la incidencia no puede resolverse en ese momento, podrás utilizar la opción Cobros de BBVA de manera excepcional para no perder la venta. 3. En cuanto se resuelva la incidencia, vuelve a utilizar REVO. ¡IMPORTANTE! BBVA no sustituye a REVO y no debe utilizarse como método habitual de cobro."
 },
 
-        },
 
         {
           question: "¿Con cuánto efectivo debo abrir la caja?",
